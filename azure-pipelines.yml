@@ -39,16 +39,14 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
-    
     - task: SonarQubePrepare@5
       inputs:
         SonarQube: 'SonarCube Endpoint'
-        scannerMode: 'Other'
-        extraProperties: |
-          # Additional properties that will be passed to the scanner, 
-          # Put one key=value per line, example:
-          sonar.projectName=VegaAbsolute
-          sonar.projectKey=VegaAbsolute
+        scannerMode: 'CLI'
+        configMode: 'manual'
+        cliProjectKey: 'VegaAbsolute'
+        cliProjectName: 'VegaAbsolute'
+        cliSources: '.'
     - task: SonarQubeAnalyze@5
     - task: SonarQubePublish@5
       inputs:
