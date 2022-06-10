@@ -33,8 +33,5 @@ jobs:
           pwd
           git config user.name "ant.nikitenko"
           git config user.email "ant.nikitenko@protonmail.com"
-          
-          # git remote add azure https://SENG426-Team3@dev.azure.com/SENG426-Team3/Vega%20Absolute/_git/Vega%20Absolute
-          # git remote -v
-          
-          git push https://ant.nikitenko:$AZURE_TOKEN@dev.azure.com/SENG426-Team3/Vega%20Absolute/_git/vega-spring --all
+
+          git push https://ant.nikitenko:$AZURE_TOKEN@dev.azure.com/SENG426-Team3/Vega%20Absolute/_git/vega-spring --force --all
