@@ -6,6 +6,7 @@
 
 trigger:
 - main
+- develop
 
 resources:
 - repo: self
