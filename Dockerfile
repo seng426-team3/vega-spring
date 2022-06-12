@@ -6,6 +6,10 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 
+# Run unit tests then clean up before building for production
+RUN ./mvnw test
+RUN ./mvnw clean
+
 RUN ./mvnw install -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
