@@ -24,6 +24,41 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
+- stage: Test
+  displayName: Run Java Spring Tests
+  jobs:
+    - job: UnitTests
+      displayName: Unit Tests
+      steps:
+      - task: Maven@3
+        inputs:
+          mavenPomFile: 'pom.xml'
+          goals: 'test'
+          publishJUnitResults: true
+          testResultsFiles: '**/surefire-reports/TEST-*.xml'
+          testRunTitle: 'Unit Tests'
+          javaHomeOption: 'JDKVersion'
+          mavenVersionOption: 'Default'
+          mavenAuthenticateFeed: false
+          effectivePomSkip: false
+          sonarQubeRunAnalysis: false
+- stage: SonarQube
+  displayName: Run SonarQube Analysis
+  jobs:
+    - job: SonarQube
+      displayName: SonarQube Analysis
+      steps:
+      - task: SonarQubePrepare@5
+        inputs:
+          SonarQube: 'SonarCube Endpoint'
+          scannerMode: 'CLI'
+          configMode: 'manual'
+          cliProjectKey: 'VegaAbsolute'
+          cliProjectName: 'VegaAbsolute'
+          cliSources: '.'
+      - task: SonarQubePublish@5
+        inputs:
+          pollingTimeoutSec: '300'
 - stage: Build
   displayName: Build and push stage
   jobs:
@@ -42,14 +77,4 @@ stages:
         tags: |
           $(tag)
           latest
-    - task: SonarQubePrepare@5
-      inputs:
-        SonarQube: 'SonarCube Endpoint'
-        scannerMode: 'CLI'
-        configMode: 'manual'
-        cliProjectKey: 'VegaAbsolute'
-        cliProjectName: 'VegaAbsolute'
-        cliSources: '.'
-    - task: SonarQubePublish@5
-      inputs:
-        pollingTimeoutSec: '300'
+    
