@@ -9,6 +9,8 @@ COPY src src
 RUN ./mvnw install -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
+EXPOSE 8080
+
 FROM openjdk:14.0.2
 VOLUME /tmp
 ARG DEPENDENCY=/workspace/app/target/dependency
