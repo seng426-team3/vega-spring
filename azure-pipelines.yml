@@ -27,7 +27,7 @@ stages:
 - stage: Test
   displayName: Run Java Spring Tests
   jobs:
-    - job: Unit-tests
+    - job: UnitTests
       displayName: Unit Tests
       steps:
       - task: Maven@3
