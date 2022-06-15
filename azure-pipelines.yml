@@ -53,3 +53,16 @@ stages:
     - task: SonarQubePublish@5
       inputs:
         pollingTimeoutSec: '300'
+    - task: Maven@3
+      inputs:
+        mavenPomFile: 'pom.xml'
+        goals: 'test'
+        options: 'test'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        testRunTitle: 'Unit Tests'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
