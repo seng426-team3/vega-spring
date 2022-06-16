@@ -6,15 +6,11 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     image: "venus/beeple"
-    ports:
-      - "8080:8080"
+    network_mode: "host"
   venus-mysql:
     image: mysql:latest
+    network_mode: "host"
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_ROOT_PASSWORD=pass
-      - MYSQL_DATABASE=venus
       - MYSQL_USER=venus
-      - MYSQL_PASSWORD=venus
-    ports:
-      - 3306:3306
+      - MYSQL_PASSWORD=pass
+      - MYSQL_DATABASE=jdbc:mysql://seng426-team3-mysql.mysql.database.azure.com:3306/venus
