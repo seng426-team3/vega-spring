@@ -7,10 +7,16 @@ services:
       dockerfile: ./Dockerfile
     image: "venus/beeple"
     network_mode: "host"
+    environment:
+      - MYSQL_USER=venus
+      - MYSQL_PASSWORD=pass
+      - MYSQL_DATABASE=jdbc:mysql://127.0.0.1:3306/venus
+      - SPRING_PROFILES_ACTIVE=prod
   venus-mysql:
     image: mysql:latest
     network_mode: "host"
     environment:
       - MYSQL_USER=venus
       - MYSQL_PASSWORD=pass
-      - MYSQL_DATABASE=jdbc:mysql://seng426-team3-mysql.mysql.database.azure.com:3306/venus
+      - MYSQL_ROOT_PASSWORD=pass
+      - MYSQL_DATABASE=venus
