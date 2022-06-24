@@ -21,4 +21,15 @@ CREATE TABLE IF NOT EXISTS userinfo (
     lastname VARCHAR(50) NOT NULL,
     FOREIGN KEY (username) REFERENCES users(username)
 );
+
+-- Mega-table approach
+CREATE TABLE IF NOT EXISTS secrets (
+    secretid INT NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    secretname VARCHAR(50) NOT NULL,
+    creationdate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    secretdata MEDIUMBLOB NOT NULL,
+    FOREIGN KEY (username) REFERENCES users(username),
+    PRIMARY KEY (secretid)
+)
 -- CREATE UNIQUE  INDEX ix_auth_username on authorities (username,authority);
