@@ -52,7 +52,7 @@ public class LoginController {
     //UserRepository userRepository;
 
     @GetMapping
-    public Principal reteievePrincipal(Principal principal) {
+    public Principal retrievePrincipal(Principal principal) {
         return principal;
     }
 
