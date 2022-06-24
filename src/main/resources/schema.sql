@@ -31,5 +31,5 @@ CREATE TABLE IF NOT EXISTS secrets (
     secretdata MEDIUMBLOB NOT NULL,
     FOREIGN KEY (username) REFERENCES users(username),
     PRIMARY KEY (secretid)
-)
+);
 -- CREATE UNIQUE  INDEX ix_auth_username on authorities (username,authority);
