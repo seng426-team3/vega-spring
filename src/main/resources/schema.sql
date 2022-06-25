@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS userinfo (
 
 -- Mega-table approach
 CREATE TABLE IF NOT EXISTS secrets (
-    secretid INT NOT NULL,
+    secretid VARCHAR(36) NOT NULL,
     username VARCHAR(50) NOT NULL,
     secretname VARCHAR(50) NOT NULL,
     creationdate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

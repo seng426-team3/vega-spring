@@ -1,6 +1,8 @@
 package com.uvic.venus.model;
 
 import java.sql.Date;
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -8,15 +10,17 @@ import javax.persistence.Table;
 @Entity
 @Table(name="secrets")
 public class SecretEntry {
+
     @Id
-    private int secretid;
+    private final UUID secretid;
+
     private String username;
     private String secretname;
     private Date creationdate;
     private byte[] secretdata;
 
 
-    public SecretEntry(int secretID, String userName, String secretName, Date creationDate, byte[] secretData) {
+    public SecretEntry(UUID secretID, String userName, String secretName, Date creationDate, byte[] secretData) {
         this.secretid = secretID;
         this.username = userName;
         this.secretname = secretName;
@@ -24,12 +28,7 @@ public class SecretEntry {
         this.secretdata = secretData;
     }
 
-    public SecretEntry() {
-
-    }
-
-    // Only get method for ID as it is a key
-    public int getSecretID() {
+    public UUID getSecretID() {
         return secretid;
     }
 
