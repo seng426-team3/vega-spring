@@ -1,32 +1,28 @@
 package com.uvic.venus.controller;
 
+import com.uvic.venus.collections.UserInfoCollection;
 import com.uvic.venus.model.UserInfo;
+import com.uvic.venus.model.Users;
 import com.uvic.venus.repository.UserInfoDAO;
+import com.uvic.venus.repository.UsersDAO;
 import com.uvic.venus.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin")
@@ -36,6 +32,9 @@ public class AdminController {
     UserInfoDAO userInfoDAO;
 
     @Autowired
+    UsersDAO usersDAO;
+
+    @Autowired
     DataSource dataSource;
 
     @Autowired
@@ -43,8 +42,22 @@ public class AdminController {
 
     @RequestMapping(value = "/fetchusers", method = RequestMethod.GET)
     public ResponseEntity<?> fetchAllUsers(){
+        // Return all userinfo attributes
         List<UserInfo> userInfoList = userInfoDAO.findAll();
-        return ResponseEntity.ok(userInfoList);
+        
+        // We return a collection of each user info and whether they
+        // are enabled or not.
+        List<UserInfoCollection> userInfoCollection = new ArrayList<>();
+        List<Users> usersList = usersDAO.findAll();
+        usersList.stream().forEach((user) -> {
+            userInfoList.stream().forEach((userinfo) -> {
+                if (user.getUsername().equals(userinfo.getUsername())) {
+                    userInfoCollection.add(new UserInfoCollection(user.getEnabled(), userinfo));
+                }
+            });
+        });
+
+        return ResponseEntity.ok(userInfoCollection);
     }
 
     @RequestMapping(value ="/enableuser", method = RequestMethod.GET)
