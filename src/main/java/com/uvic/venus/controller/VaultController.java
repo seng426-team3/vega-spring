@@ -16,7 +16,7 @@ import com.uvic.venus.model.SecretEntry;
 import com.uvic.venus.repository.SecretDAO;
 
 @RestController
-@RequestMapping("/secrets")
+@RequestMapping("/vault")
 public class VaultController {
     @Autowired
     SecretDAO secretDAO;
@@ -24,27 +24,32 @@ public class VaultController {
     @Autowired
     DataSource dataSource;
 
-    @RequestMapping(value="/fetchsecrets", method = RequestMethod.GET)
+    @RequestMapping(value="/userfetchsecrets", method = RequestMethod.GET)
     public ResponseEntity<?> fetchSecrets() throws Exception{
     
     }
 
-    @RequestMapping(value="/createsecret", method = RequestMethod.POST)
+    @RequestMapping(value="/fetchallsecrets", method = RequestMethod.GET)
+    public ResponseEntity<?> fetchAllSecrets() throws Exception{
+    
+    }
+
+    @RequestMapping(value="/usercreatesecret", method = RequestMethod.POST)
     public ResponseEntity<?> createSecret(@RequestBody SecretEntry secret) throws Exception{
     
     }
 
-    @RequestMapping(value="/readsecret", method = RequestMethod.GET)
+    @RequestMapping(value="/userreadsecret", method = RequestMethod.GET)
     public ResponseEntity<?> readSecret(@RequestParam int secretID) throws Exception{
     
     }
 
-    @RequestMapping(value="/upatesecret", method = RequestMethod.POST)
+    @RequestMapping(value="/userupatesecret", method = RequestMethod.POST)
     public ResponseEntity<?> updateSecret(@RequestBody SecretEntry secret) throws Exception{
     
     }
 
-    @RequestMapping(value="/deletesecret", method = RequestMethod.GET)
+    @RequestMapping(value="/userdeletesecret", method = RequestMethod.GET)
     public ResponseEntity<?> deleteSecret(@RequestParam int secretID) throws Exception{
     
     }
