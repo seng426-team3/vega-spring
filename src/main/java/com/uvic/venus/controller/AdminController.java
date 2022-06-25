@@ -72,7 +72,22 @@ public class AdminController {
         builder.disabled(!enable);
 
         manager.updateUser(builder.build());
-        return ResponseEntity.ok("User Updated Successfully");
+        return ResponseEntity.ok("User enabled successfully");
+    }
+
+    @RequestMapping(value ="/disableuser", method = RequestMethod.GET)
+    public ResponseEntity<?> disableUserAccount(@RequestParam String username, @RequestParam boolean disable){
+        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+        UserDetails userDetails = manager.loadUserByUsername(username);
+
+        User.UserBuilder builder = User.builder();
+        builder.username(userDetails.getUsername());
+        builder.password(userDetails.getPassword());
+        builder.authorities(userDetails.getAuthorities());
+        builder.disabled(disable);
+
+        manager.updateUser(builder.build());
+        return ResponseEntity.ok("User disabled successfully");
     }
 
     @RequestMapping(value ="/changerole", method = RequestMethod.GET)
