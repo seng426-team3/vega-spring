@@ -16,6 +16,7 @@ import com.uvic.venus.model.SecretEntry;
 import com.uvic.venus.repository.SecretDAO;
 
 @RestController
+@RequestMapping("/secrets")
 public class VaultController {
     @Autowired
     SecretDAO secretDAO;
