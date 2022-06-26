@@ -1,7 +1,6 @@
 package com.uvic.venus.controller;
 
 import com.uvic.venus.collections.UserInfoCollection;
-import com.uvic.venus.model.SecretEntry;
 import com.uvic.venus.model.UserInfo;
 import com.uvic.venus.model.Users;
 import com.uvic.venus.repository.SecretDAO;
@@ -121,9 +120,8 @@ public class AdminController {
 
     @RequestMapping(value="/fetchallsecrets", method = RequestMethod.GET)
     public ResponseEntity<?> fetchAllSecrets(){
-        List<SecretEntry> secretEntryList = secretDAO.findAll();
 
-        return ResponseEntity.ok(secretEntryList);
+        return ResponseEntity.ok(secretDAO.findAll());
     }
 
 }
