@@ -120,7 +120,7 @@ public class AdminController {
     }
 
     @RequestMapping(value="/fetchallsecrets", method = RequestMethod.GET)
-    public ResponseEntity<?> fetchAllSecrets() throws Exception{
+    public ResponseEntity<?> fetchAllSecrets(){
         List<SecretEntry> secretEntryList = secretDAO.findAll();
 
         return ResponseEntity.ok(secretEntryList);
