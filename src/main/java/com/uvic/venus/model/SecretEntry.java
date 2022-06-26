@@ -12,20 +12,21 @@ import javax.persistence.Table;
 public class SecretEntry {
 
     @Id
-    private final UUID secretid;
-
+    private UUID secretid;
     private String username;
     private String secretname;
     private Date creationdate;
-    private byte[] secretdata;
+    // private byte[] secretdata;
 
+    public SecretEntry(String userName, String secretName) {
+        java.util.Date utilDate = new java.util.Date();
+        java.sql.Date creationDate = new java.sql.Date(utilDate.getTime());
 
-    public SecretEntry(UUID secretID, String userName, String secretName, Date creationDate, byte[] secretData) {
-        this.secretid = secretID;
+        this.secretid = UUID.randomUUID();
         this.username = userName;
         this.secretname = secretName;
         this.creationdate = creationDate;
-        this.secretdata = secretData;
+        // this.secretdata = secretData;
     }
 
     public UUID getSecretID() {
@@ -53,6 +54,7 @@ public class SecretEntry {
         return creationdate;
     }
 
+    /*
     public byte[] getSecretData() {
         return secretdata;
     }
@@ -60,6 +62,7 @@ public class SecretEntry {
     public void setSecretData(byte[] secretData) {
         this.secretdata = secretData;
     }
+    */
 
     @Override
     public String toString() {
@@ -68,7 +71,6 @@ public class SecretEntry {
                 ", username='" + username + '\'' +
                 ", secretName='" + secretname + '\'' +
                 ", creationDate='" + creationdate + '\'' +
-                ", bytes of data='" + secretdata.length + '\'' +
                 '}';
     }
 }

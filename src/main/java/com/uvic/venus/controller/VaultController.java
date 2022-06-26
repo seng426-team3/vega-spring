@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +23,20 @@ public class VaultController {
 
     @RequestMapping(value="/fetchsecrets", method = RequestMethod.GET)
     public ResponseEntity<?> fetchSecrets(){
+        
         List<SecretEntry> secretEntryList = secretDAO.findAll();
+        List<SecretEntry> secretEntries = new ArrayList<>();
 
-        return ResponseEntity.ok(secretEntryList);
+        secretEntryList.stream().forEach((secret) -> {
+            secretEntries.add(secret);
+        });
+        
+        return ResponseEntity.ok(secretEntries);
     }
 
     @RequestMapping(value="/createsecret", method = RequestMethod.POST)
     public ResponseEntity<?> createSecret(@RequestBody String secretName){
-        java.util.Date utilDate = new java.util.Date();
-        java.sql.Date currentDate = new java.sql.Date(utilDate.getTime());
-
-        byte[] bytes = {121};
-
-        SecretEntry newSecretEntry = new SecretEntry(UUID.randomUUID(), "testuser", secretName, currentDate, bytes);
+        SecretEntry newSecretEntry = new SecretEntry("testuser", secretName);
 
         secretDAO.save(newSecretEntry);
 
