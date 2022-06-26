@@ -1,8 +1,10 @@
 package com.uvic.venus.controller;
 
 import com.uvic.venus.collections.UserInfoCollection;
+import com.uvic.venus.model.Authorities;
 import com.uvic.venus.model.UserInfo;
 import com.uvic.venus.model.Users;
+import com.uvic.venus.repository.AuthoritiesDAO;
 import com.uvic.venus.repository.UserInfoDAO;
 import com.uvic.venus.repository.UsersDAO;
 import com.uvic.venus.storage.StorageService;
@@ -35,6 +37,9 @@ public class AdminController {
     UsersDAO usersDAO;
 
     @Autowired
+    AuthoritiesDAO authoritiesDAO;
+
+    @Autowired
     DataSource dataSource;
 
     @Autowired
@@ -44,6 +49,7 @@ public class AdminController {
     public ResponseEntity<?> fetchAllUsers(){
         // Return all userinfo attributes
         List<UserInfo> userInfoList = userInfoDAO.findAll();
+        List<Authorities> authoritiesList = authoritiesDAO.findAll();
         
         // We return a collection of each user info and whether they
         // are enabled or not.
@@ -53,6 +59,16 @@ public class AdminController {
             userInfoList.stream().forEach((userinfo) -> {
                 if (user.getUsername().equals(userinfo.getUsername())) {
                     userInfoCollection.add(new UserInfoCollection(user.getEnabled(), userinfo));
+                }
+            });
+        });
+
+        // We add the user's role to the list as well.
+        userInfoCollection.stream().forEach((userInfo) -> {
+            authoritiesList.stream().forEach((authority) -> {
+                if (authority.getUsername().equals(userInfo.getUserInfo().getUsername())) {
+                    // The authority entry is equivalent to the role semantics on vega-web
+                    userInfo.setRole(authority.getAuthority());
                 }
             });
         });
