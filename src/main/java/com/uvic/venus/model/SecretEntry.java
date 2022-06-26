@@ -12,24 +12,39 @@ import javax.persistence.Table;
 public class SecretEntry {
 
     @Id
-    private UUID secretid;
+    private String secretid;
     private String username;
     private String secretname;
     private Date creationdate;
     // private byte[] secretdata;
 
+    // Constructor to be used by application logic
     public SecretEntry(String userName, String secretName) {
         java.util.Date utilDate = new java.util.Date();
         java.sql.Date creationDate = new java.sql.Date(utilDate.getTime());
 
-        this.secretid = UUID.randomUUID();
+        this.secretid = UUID.randomUUID().toString();
         this.username = userName;
         this.secretname = secretName;
         this.creationdate = creationDate;
         // this.secretdata = secretData;
     }
 
-    public UUID getSecretID() {
+    // Constructor used by database fetching
+    public SecretEntry(String secretID, String userName, String secretName, Date creationDate) {
+        this.secretid = secretID;
+        this.username = userName;
+        this.secretname = secretName;
+        this.creationdate = creationDate;
+    }
+
+    // Required default constructor
+    public SecretEntry() {
+
+    }
+
+    // Only get method for ID as it should never be updated
+    public String getSecretID() {
         return secretid;
     }
 
