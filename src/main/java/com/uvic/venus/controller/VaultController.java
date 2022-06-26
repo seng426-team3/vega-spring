@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import com.uvic.venus.auth.JwtUtil;
 import com.uvic.venus.model.SecretEntry;
 import com.uvic.venus.repository.SecretDAO;
 
@@ -18,10 +21,17 @@ public class VaultController {
     @Autowired
     SecretDAO secretDAO;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     @RequestMapping(value="/fetchsecrets", method = RequestMethod.GET)
-    public ResponseEntity<?> fetchSecrets(){
+    public ResponseEntity<?> fetchSecrets(String token){
+        String username = jwtUtil.extractUsername(token);
+
+        List<SecretEntry> userSecrets= secretDAO.findByUsername(username);
         
-        return ResponseEntity.ok(secretDAO.findAll());
+        
+        return ResponseEntity.ok(userSecrets);
     }
 
     @RequestMapping(value="/createsecret", method = RequestMethod.POST)
