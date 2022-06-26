@@ -1,8 +1,10 @@
 package com.uvic.venus.controller;
 
 import com.uvic.venus.collections.UserInfoCollection;
+import com.uvic.venus.model.SecretEntry;
 import com.uvic.venus.model.UserInfo;
 import com.uvic.venus.model.Users;
+import com.uvic.venus.repository.SecretDAO;
 import com.uvic.venus.repository.UserInfoDAO;
 import com.uvic.venus.repository.UsersDAO;
 import com.uvic.venus.storage.StorageService;
@@ -33,6 +35,9 @@ public class AdminController {
 
     @Autowired
     UsersDAO usersDAO;
+
+    @Autowired
+    SecretDAO secretDAO;
 
     @Autowired
     DataSource dataSource;
@@ -112,6 +117,13 @@ public class AdminController {
     public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file){
         storageService.store(file);
         return ResponseEntity.ok("File uploaded Successfully");
+    }
+
+    @RequestMapping(value="/fetchallsecrets", method = RequestMethod.GET)
+    public ResponseEntity<?> fetchAllSecrets() throws Exception{
+        List<SecretEntry> secretEntryList = secretDAO.findAll();
+
+        return ResponseEntity.ok(secretEntryList);
     }
 
 }
