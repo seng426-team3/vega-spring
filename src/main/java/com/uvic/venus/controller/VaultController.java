@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.uvic.venus.model.SecretEntry;
+import com.uvic.venus.model.UserInfo;
 import com.uvic.venus.repository.SecretDAO;
 
 @RestController
@@ -24,9 +26,12 @@ public class VaultController {
     @Autowired
     DataSource dataSource;
 
+    UserInfo currentUser = (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
     @RequestMapping(value="/userfetchsecrets", method = RequestMethod.GET)
     public ResponseEntity<?> fetchSecrets() throws Exception{
         // TO DO: Implement user secret fetching
+
         return ResponseEntity.ok("Function not implemented");
     }
 
@@ -38,7 +43,7 @@ public class VaultController {
     }
 
     @RequestMapping(value="/usercreatesecret", method = RequestMethod.POST)
-    public ResponseEntity<?> createSecret(@RequestBody SecretEntry secret) throws Exception{
+    public ResponseEntity<?> createSecret(@RequestBody String secretName, byte[] secretData) throws Exception{
         // TO DO: Implement user secret creation
         return ResponseEntity.ok("Function not implemented");
     }
