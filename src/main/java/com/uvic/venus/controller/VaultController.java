@@ -2,8 +2,6 @@ package com.uvic.venus.controller;
 
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,10 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.uvic.venus.model.SecretEntry;
-import com.uvic.venus.model.UserInfo;
 import com.uvic.venus.repository.SecretDAO;
 
 @RestController
@@ -22,11 +18,6 @@ import com.uvic.venus.repository.SecretDAO;
 public class VaultController {
     @Autowired
     SecretDAO secretDAO;
-
-    @Autowired
-    DataSource dataSource;
-
-    UserInfo currentUser = (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     @RequestMapping(value="/userfetchsecrets", method = RequestMethod.GET)
     public ResponseEntity<?> fetchSecrets() throws Exception{
