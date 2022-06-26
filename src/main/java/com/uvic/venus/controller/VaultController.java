@@ -34,7 +34,7 @@ public class VaultController {
     }
 
     @RequestMapping(value="/readsecret", method = RequestMethod.GET)
-    public ResponseEntity<?> readSecret(@RequestParam int secretID){
+    public ResponseEntity<?> readSecret(@RequestParam String secretID){
         // TO DO: Implement user secret reading
         return ResponseEntity.ok("Function not implemented");
     }
