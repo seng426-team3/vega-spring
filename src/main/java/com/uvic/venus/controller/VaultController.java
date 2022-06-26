@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -24,19 +21,12 @@ public class VaultController {
     @RequestMapping(value="/fetchsecrets", method = RequestMethod.GET)
     public ResponseEntity<?> fetchSecrets(){
         
-        List<SecretEntry> secretEntryList = secretDAO.findAll();
-        List<SecretEntry> secretEntries = new ArrayList<>();
-
-        secretEntryList.stream().forEach((secret) -> {
-            secretEntries.add(secret);
-        });
-        
-        return ResponseEntity.ok(secretEntries);
+        return ResponseEntity.ok(secretDAO.findAll());
     }
 
     @RequestMapping(value="/createsecret", method = RequestMethod.POST)
     public ResponseEntity<?> createSecret(@RequestBody String secretName){
-        SecretEntry newSecretEntry = new SecretEntry("testuser", secretName);
+        SecretEntry newSecretEntry = new SecretEntry("testuser@venus.com", secretName);
 
         secretDAO.save(newSecretEntry);
 
@@ -56,8 +46,9 @@ public class VaultController {
     }
 
     @RequestMapping(value="/deletesecret", method = RequestMethod.GET)
-    public ResponseEntity<?> deleteSecret(@RequestParam int secretID){
-        // TO DO: Implement user secret deletion
-        return ResponseEntity.ok("Function not implemented");
+    public ResponseEntity<?> deleteSecret(@RequestParam String secretID){
+        secretDAO.deleteById(secretID);
+
+        return ResponseEntity.ok("Successfully deleted secret");
     }
 }
