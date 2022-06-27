@@ -1,6 +1,8 @@
 package com.uvic.venus.model;
 
 import java.sql.Date;
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -8,28 +10,45 @@ import javax.persistence.Table;
 @Entity
 @Table(name="secrets")
 public class SecretEntry {
+
     @Id
-    private int secretid;
+    private String secretid;
     private String username;
     private String secretname;
+    private String filetype;
     private Date creationdate;
     private byte[] secretdata;
 
+    // Constructor to be used by application logic
+    public SecretEntry(String userName, String secretName, String fileType, byte[] secretData) {
+        java.util.Date utilDate = new java.util.Date();
+        java.sql.Date creationDate = new java.sql.Date(utilDate.getTime());
 
-    public SecretEntry(int secretID, String userName, String secretName, Date creationDate, byte[] secretData) {
-        this.secretid = secretID;
+        this.secretid = UUID.randomUUID().toString();
         this.username = userName;
         this.secretname = secretName;
+        this.filetype = fileType;
         this.creationdate = creationDate;
         this.secretdata = secretData;
     }
 
+    // Constructor used by database fetching
+    public SecretEntry(String secretID, String userName, String secretName, String fileType, Date creationDate, byte[] secretData) {
+        this.secretid = secretID;
+        this.username = userName;
+        this.secretname = secretName;
+        this.filetype = fileType;
+        this.creationdate = creationDate;
+        this.secretdata = secretData;
+    }
+
+    // Required default constructor
     public SecretEntry() {
 
     }
 
-    // Only get method for ID as it is a key
-    public int getSecretID() {
+    // Only get method for ID as it should never be updated
+    public String getSecretID() {
         return secretid;
     }
 
@@ -49,6 +68,14 @@ public class SecretEntry {
         this.secretname = secretName;
     }
 
+    public String getFileType() {
+        return filetype;
+    }
+
+    public void setFileType(String fileType) {
+        this.filetype = fileType;
+    }
+
     // Only get method as date should never be updated after creation
     public Date getCreatDate() {
         return creationdate;
@@ -65,11 +92,11 @@ public class SecretEntry {
     @Override
     public String toString() {
         return "SecretEntry{" +
-                "secretID='" + secretid + '\'' +
+                "secretid='" + secretid + '\'' +
                 ", username='" + username + '\'' +
-                ", secretName='" + secretname + '\'' +
-                ", creationDate='" + creationdate + '\'' +
-                ", bytes of data='" + secretdata.length + '\'' +
+                ", secretname='" + secretname + '\'' +
+                ", filetype='" + filetype + '\'' +
+                ", creationdate='" + creationdate + '\'' +
                 '}';
     }
 }
