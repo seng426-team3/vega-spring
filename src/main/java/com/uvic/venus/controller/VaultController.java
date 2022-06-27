@@ -25,7 +25,7 @@ public class VaultController {
     @Autowired
     JwtUtil jwtUtil;
 
-    @RequestMapping(value="/fetchsecrets", method = RequestMethod.GET)
+    @RequestMapping(value="/fetchsecrets", method = RequestMethod.POST)
     public ResponseEntity<?> fetchSecrets(@RequestPart String token){
         String username = jwtUtil.extractUsername(token);
 
@@ -37,11 +37,8 @@ public class VaultController {
     @RequestMapping(value="/createsecret", method = RequestMethod.POST)
     public ResponseEntity<?> createSecret(@RequestPart String secretname, @RequestPart String token, @RequestPart MultipartFile file) throws Exception{
         String username = jwtUtil.extractUsername(token);
-
         String fileName = file.getOriginalFilename();
-
         String fileEnd = fileName.substring(fileName.indexOf("."));
-
         byte[] secretData = file.getBytes();
 
         SecretEntry newSecretEntry = new SecretEntry(username, secretname, fileEnd, secretData);
@@ -51,7 +48,7 @@ public class VaultController {
         return ResponseEntity.ok("Successfully created a secret");
     }
 
-    @RequestMapping(value="/readsecret", method = RequestMethod.GET)
+    @RequestMapping(value="/readsecret", method = RequestMethod.POST)
     public ResponseEntity<?> readSecret(@RequestPart String secretid){        
         SecretEntry secret = secretDAO.getById(secretid);
 
@@ -61,14 +58,15 @@ public class VaultController {
         "attachment; filename=\"" + secret.getSecretName() + secret.getFileType() + "\"").body(file);
     }
 
-    @RequestMapping(value="/upatesecret", method = RequestMethod.POST)
-    public ResponseEntity<?> updateSecret(@RequestPart String secretID, @RequestPart String secretName, @RequestPart MultipartFile file) throws Exception {
-        SecretEntry secret = secretDAO.findById(secretID).get();
+    @RequestMapping(value="/secretupdate", method = RequestMethod.POST)
+    public ResponseEntity<?> updateSecret(@RequestPart String secretid, @RequestPart(required=false) String secretname, @RequestPart(required=false) MultipartFile file) throws Exception {
+        SecretEntry secret = secretDAO.getById(secretid);
 
         String response = "No updates made to secret";
 
-        if (secretName != "" && secretName != secret.getSecretName()) {
-            // TO DO: Update secret name functionality
+        if (secretname != null && secretname != secret.getSecretName()) {
+            secret.setSecretName(secretname);
+
             response = "Sucessfully updated secret";
         }
 
@@ -76,15 +74,23 @@ public class VaultController {
             byte[] secretData =  file.getBytes();
 
             if (secretData != secret.getSecretData()) {
-                // TO DO: Update secret data functionality
+                String fileName = file.getOriginalFilename();
+                String fileEnd = fileName.substring(fileName.indexOf("."));
+
+                secret.setFileType(fileEnd);
+                secret.setSecretData(secretData);
+
                 response = "Successfully updated secret";
             }
         }
 
+        secretDAO.deleteById(secretid);
+        secretDAO.save(secret);
+
         return ResponseEntity.ok(response);
     }
 
-    @RequestMapping(value="/deletesecret", method = RequestMethod.GET)
+    @RequestMapping(value="/deletesecret", method = RequestMethod.POST)
     public ResponseEntity<?> deleteSecret(@RequestPart String secretid){
         secretDAO.deleteById(secretid);
 
