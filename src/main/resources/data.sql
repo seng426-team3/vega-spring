@@ -38,7 +38,7 @@ INSERT INTO userinfo (username, firstname, lastname) values
     ('angelinacosta@venus.com', 'Angelina', 'Costa'),
     ('brijeshgupta@venus.com', 'Brijesh', 'Gupta'),
     ('amyfofana@venus.com', 'Amy', 'Fofana'),
-    ('testuser@venus.com', 'testuser', 'testuser')
+    ('testuser@venus.com', 'testuser', 'testuser'),
     ('testuser2@venus.com', 'testuser2', 'testuser2');
 
 -- Secret test data for dev mode
