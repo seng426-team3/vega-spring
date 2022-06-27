@@ -40,8 +40,3 @@ INSERT INTO userinfo (username, firstname, lastname) values
     ('amyfofana@venus.com', 'Amy', 'Fofana'),
     ('testuser@venus.com', 'testuser', 'testuser'),
     ('testuser2@venus.com', 'testuser2', 'testuser2');
-
--- Secret test data for dev mode
-INSERT INTO secrets (secretid, username, secretname, creationdate) values
-    ('3', 'testuser@venus.com', 'TestSecret', CURRENT_TIMESTAMP),
-    ('2', 'testuser2@venus.com', 'OtherSecret', CURRENT_TIMESTAMP);
