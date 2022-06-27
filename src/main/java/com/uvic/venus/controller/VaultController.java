@@ -59,13 +59,13 @@ public class VaultController {
     }
 
     @RequestMapping(value="/upatesecret", method = RequestMethod.POST)
-    public ResponseEntity<?> updateSecret(@RequestPart String secretID, @RequestPart String secretName, @RequestPart MultipartFile file) throws Exception {
-        SecretEntry secret = secretDAO.getById(secretID);
+    public ResponseEntity<?> updateSecret(@RequestPart String secretid, @RequestPart String secretname, @RequestPart MultipartFile file) throws Exception {
+        SecretEntry secret = secretDAO.getById(secretid);
 
         String response = "No updates made to secret";
 
-        if (secretName != null && secretName != secret.getSecretName()) {
-            secret.setSecretName(secretName);
+        if (secretname != null && secretname != secret.getSecretName()) {
+            secret.setSecretName(secretname);
 
             response = "Sucessfully updated secret";
         }
@@ -84,7 +84,7 @@ public class VaultController {
             }
         }
 
-        secretDAO.deleteById(secretID);
+        secretDAO.deleteById(secretid);
         secretDAO.save(secret);
 
         return ResponseEntity.ok(response);
