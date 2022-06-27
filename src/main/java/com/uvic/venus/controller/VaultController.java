@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,8 @@ public class VaultController {
     @RequestMapping(value="/createsecret", method = RequestMethod.POST)
     public ResponseEntity<?> createSecret(@RequestPart String secretname, @RequestPart String token, @RequestPart MultipartFile file) throws Exception{
         String username = jwtUtil.extractUsername(token);
-
         String fileName = file.getOriginalFilename();
-
         String fileEnd = fileName.substring(fileName.indexOf("."));
-
         byte[] secretData = file.getBytes();
 
         SecretEntry newSecretEntry = new SecretEntry(username, secretname, fileEnd, secretData);
