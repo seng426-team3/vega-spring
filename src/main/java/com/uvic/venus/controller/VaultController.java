@@ -26,7 +26,6 @@ public class VaultController {
 
     @RequestMapping(value="/fetchsecrets", method = RequestMethod.GET)
     public ResponseEntity<?> fetchSecrets(@RequestParam String token){
-
         String username = jwtUtil.extractUsername(token);
 
         List<SecretEntry> userSecrets= secretDAO.findByUsername(username);
@@ -35,8 +34,10 @@ public class VaultController {
     }
 
     @RequestMapping(value="/createsecret", method = RequestMethod.POST)
-    public ResponseEntity<?> createSecret(@RequestBody String secretName){
-        SecretEntry newSecretEntry = new SecretEntry("jonoliver@venus.com", secretName);
+    public ResponseEntity<?> createSecret(@RequestParam String secretName, String token){
+        String username = jwtUtil.extractUsername(token);
+
+        SecretEntry newSecretEntry = new SecretEntry(username, secretName);
 
         secretDAO.save(newSecretEntry);
 
