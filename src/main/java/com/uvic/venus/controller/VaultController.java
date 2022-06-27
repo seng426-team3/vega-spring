@@ -40,9 +40,11 @@ public class VaultController {
 
         String fileName = file.getOriginalFilename();
 
+        String fileEnd = fileName.substring(fileName.indexOf("."));
+
         byte[] secretData = file.getBytes();
 
-        SecretEntry newSecretEntry = new SecretEntry(username, secretname, fileName, secretData);
+        SecretEntry newSecretEntry = new SecretEntry(username, secretname, fileEnd, secretData);
 
         secretDAO.save(newSecretEntry);
 
@@ -56,7 +58,7 @@ public class VaultController {
         byte[] file = secret.getSecretData();
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-        "attachment; filename=\"" + secret.getFileName() + "\"").body(file);
+        "attachment; filename=\"" + secret.getSecretName() + secret.getFileType() + "\"").body(file);
     }
 
     @RequestMapping(value="/upatesecret", method = RequestMethod.POST)
