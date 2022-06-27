@@ -1,6 +1,5 @@
 package com.uvic.venus.model;
 
-import java.io.FileInputStream;
 import java.sql.Date;
 import java.util.UUID;
 
@@ -16,26 +15,29 @@ public class SecretEntry {
     private String secretid;
     private String username;
     private String secretname;
+    private String secretfilename;
     private Date creationdate;
-    private FileInputStream secretdata;
+    private byte[] secretdata;
 
     // Constructor to be used by application logic
-    public SecretEntry(String userName, String secretName, FileInputStream secretData) {
+    public SecretEntry(String userName, String secretName, String fileName, byte[] secretData) {
         java.util.Date utilDate = new java.util.Date();
         java.sql.Date creationDate = new java.sql.Date(utilDate.getTime());
 
         this.secretid = UUID.randomUUID().toString();
         this.username = userName;
         this.secretname = secretName;
+        this.secretfilename = fileName;
         this.creationdate = creationDate;
         this.secretdata = secretData;
     }
 
     // Constructor used by database fetching
-    public SecretEntry(String secretID, String userName, String secretName, Date creationDate, FileInputStream secretData) {
+    public SecretEntry(String secretID, String userName, String secretName, String fileName, Date creationDate, byte[] secretData) {
         this.secretid = secretID;
         this.username = userName;
         this.secretname = secretName;
+        this.secretfilename = fileName;
         this.creationdate = creationDate;
         this.secretdata = secretData;
     }
@@ -66,16 +68,24 @@ public class SecretEntry {
         this.secretname = secretName;
     }
 
+    public String getFileName() {
+        return secretfilename;
+    }
+
+    public void setFileName(String fileName) {
+        this.secretfilename = fileName;
+    }
+
     // Only get method as date should never be updated after creation
     public Date getCreatDate() {
         return creationdate;
     }
 
-    public FileInputStream getSecretData() {
+    public byte[] getSecretData() {
         return secretdata;
     }
 
-    public void setSecretData(FileInputStream secretData) {
+    public void setSecretData(byte[] secretData) {
         this.secretdata = secretData;
     }
 
@@ -85,6 +95,7 @@ public class SecretEntry {
                 "secretid='" + secretid + '\'' +
                 ", username='" + username + '\'' +
                 ", secretname='" + secretname + '\'' +
+                ", secretfilename='" + secretfilename + '\'' +
                 ", creationdate='" + creationdate + '\'' +
                 '}';
     }
