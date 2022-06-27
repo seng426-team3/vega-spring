@@ -36,3 +36,13 @@ CREATE TABLE IF NOT EXISTS secrets (
     PRIMARY KEY (secretid)
 );
 -- CREATE UNIQUE  INDEX ix_auth_username on authorities (username,authority);
+
+-- News and Events
+CREATE TABLE IF NOT EXISTS news (
+    newsid VARCHAR(36) NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    bodytext LONGTEXT NOT NULL,
+    newsdate VARCHAR(36) NOT NULL,
+    timepublished INT(255) NOT NULL,
+    author VARCHAR(100) NOT NULL
+);
