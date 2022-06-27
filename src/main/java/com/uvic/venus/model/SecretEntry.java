@@ -17,7 +17,7 @@ public class SecretEntry {
     private String secretname;
     private String filetype;
     private Date creationdate;
-    private byte[] secretdata;
+    // private byte[] secretdata;
 
     // Constructor to be used by application logic
     public SecretEntry(String userName, String secretName, String fileType, byte[] secretData) {
@@ -39,7 +39,6 @@ public class SecretEntry {
         this.secretname = secretName;
         this.filetype = fileType;
         this.creationdate = creationDate;
-        this.secretdata = secretData;
     }
 
     // Required default constructor
@@ -81,6 +80,7 @@ public class SecretEntry {
         return creationdate;
     }
 
+    /*
     public byte[] getSecretData() {
         return secretdata;
     }
@@ -88,6 +88,7 @@ public class SecretEntry {
     public void setSecretData(byte[] secretData) {
         this.secretdata = secretData;
     }
+    */
 
     @Override
     public String toString() {
