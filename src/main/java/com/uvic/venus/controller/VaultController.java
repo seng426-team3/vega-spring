@@ -25,7 +25,7 @@ public class VaultController {
     @Autowired
     JwtUtil jwtUtil;
 
-    @RequestMapping(value="/fetchsecrets", method = RequestMethod.GET)
+    @RequestMapping(value="/fetchsecrets", method = RequestMethod.POST)
     public ResponseEntity<?> fetchSecrets(@RequestPart String token){
         String username = jwtUtil.extractUsername(token);
 
@@ -48,7 +48,7 @@ public class VaultController {
         return ResponseEntity.ok("Successfully created a secret");
     }
 
-    @RequestMapping(value="/readsecret", method = RequestMethod.GET)
+    @RequestMapping(value="/readsecret", method = RequestMethod.POST)
     public ResponseEntity<?> readSecret(@RequestPart String secretid){        
         SecretEntry secret = secretDAO.getById(secretid);
 
@@ -90,7 +90,7 @@ public class VaultController {
         return ResponseEntity.ok(response);
     }
 
-    @RequestMapping(value="/deletesecret", method = RequestMethod.GET)
+    @RequestMapping(value="/deletesecret", method = RequestMethod.POST)
     public ResponseEntity<?> deleteSecret(@RequestPart String secretid){
         secretDAO.deleteById(secretid);
 
