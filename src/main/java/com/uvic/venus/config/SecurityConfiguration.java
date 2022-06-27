@@ -42,8 +42,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/files/**").hasAnyRole("ADMIN", "STAFF")
                 .and()
                 .authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")
-                .and()
-                .authorizeRequests().antMatchers("/vault/**").hasAnyRole("ADMIN", "STAFF", "USER")
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
