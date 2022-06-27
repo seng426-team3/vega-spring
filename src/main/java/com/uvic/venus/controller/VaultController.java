@@ -58,8 +58,8 @@ public class VaultController {
         "attachment; filename=\"" + secret.getSecretName() + secret.getFileType() + "\"").body(file);
     }
 
-    @RequestMapping(value="/upatesecret", method = RequestMethod.POST)
-    public ResponseEntity<?> updateSecret(@RequestPart String secretid, @RequestPart String secretname, @RequestPart MultipartFile file) throws Exception {
+    @RequestMapping(value="/secretupdate", method = RequestMethod.POST)
+    public ResponseEntity<?> updateSecret(@RequestPart String secretid, @RequestPart(required=false) String secretname, @RequestPart(required=false) MultipartFile file) throws Exception {
         SecretEntry secret = secretDAO.getById(secretid);
 
         String response = "No updates made to secret";
