@@ -64,7 +64,7 @@ public class VaultController {
 
         String response = "No updates made to secret";
 
-        if (secretName != "" && secretName != secret.getSecretName()) {
+        if (secretName != null && secretName != secret.getSecretName()) {
             secret.setSecretName(secretName);
 
             response = "Sucessfully updated secret";
