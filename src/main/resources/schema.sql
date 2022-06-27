@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS secrets (
     username VARCHAR(50) NOT NULL,
     secretname VARCHAR(50) NOT NULL,
     creationdate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    secretdata MEDIUMBLOB NOT NULL,
     FOREIGN KEY (username) REFERENCES users(username),
     PRIMARY KEY (secretid)
 );

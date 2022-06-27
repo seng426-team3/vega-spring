@@ -1,5 +1,6 @@
 package com.uvic.venus.model;
 
+import java.io.FileInputStream;
 import java.sql.Date;
 import java.util.UUID;
 
@@ -16,10 +17,10 @@ public class SecretEntry {
     private String username;
     private String secretname;
     private Date creationdate;
-    // private byte[] secretdata;
+    private FileInputStream secretdata;
 
     // Constructor to be used by application logic
-    public SecretEntry(String userName, String secretName) {
+    public SecretEntry(String userName, String secretName, FileInputStream secretData) {
         java.util.Date utilDate = new java.util.Date();
         java.sql.Date creationDate = new java.sql.Date(utilDate.getTime());
 
@@ -27,15 +28,16 @@ public class SecretEntry {
         this.username = userName;
         this.secretname = secretName;
         this.creationdate = creationDate;
-        // this.secretdata = secretData;
+        this.secretdata = secretData;
     }
 
     // Constructor used by database fetching
-    public SecretEntry(String secretID, String userName, String secretName, Date creationDate) {
+    public SecretEntry(String secretID, String userName, String secretName, Date creationDate, FileInputStream secretData) {
         this.secretid = secretID;
         this.username = userName;
         this.secretname = secretName;
         this.creationdate = creationDate;
+        this.secretdata = secretData;
     }
 
     // Required default constructor
@@ -69,23 +71,21 @@ public class SecretEntry {
         return creationdate;
     }
 
-    /*
-    public byte[] getSecretData() {
+    public FileInputStream getSecretData() {
         return secretdata;
     }
 
-    public void setSecretData(byte[] secretData) {
+    public void setSecretData(FileInputStream secretData) {
         this.secretdata = secretData;
     }
-    */
 
     @Override
     public String toString() {
         return "SecretEntry{" +
-                "secretID='" + secretid + '\'' +
+                "secretid='" + secretid + '\'' +
                 ", username='" + username + '\'' +
-                ", secretName='" + secretname + '\'' +
-                ", creationDate='" + creationdate + '\'' +
+                ", secretname='" + secretname + '\'' +
+                ", creationdate='" + creationdate + '\'' +
                 '}';
     }
 }
