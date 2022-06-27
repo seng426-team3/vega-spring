@@ -67,6 +67,7 @@ public class VaultController {
         String response = "No updates made to secret";
 
         if (secretName != "" && secretName != secret.getSecretName()) {
+            // TO DO: Update secret name functionality
             response = "Sucessfully updated secret";
         }
 
@@ -74,6 +75,7 @@ public class VaultController {
             FileInputStream secretData = (FileInputStream) file.getInputStream();
 
             if (secretData != secret.getSecretData()) {
+                // TO DO: Update secret data functionality
                 response = "Successfully updated secret";
             }
         }
