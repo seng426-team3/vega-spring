@@ -2,6 +2,7 @@ package com.uvic.venus.controller;
 
 import com.uvic.venus.collections.UserInfoCollection;
 import com.uvic.venus.model.Authorities;
+import com.uvic.venus.model.SecretEntry;
 import com.uvic.venus.model.UserInfo;
 import com.uvic.venus.model.Users;
 import com.uvic.venus.repository.AuthoritiesDAO;
@@ -50,7 +51,7 @@ public class AdminController {
     StorageService storageService;
 
     @RequestMapping(value = "/fetchusers", method = RequestMethod.GET)
-    public ResponseEntity<?> fetchAllUsers(){
+    public ResponseEntity<List<UserInfoCollection>> fetchAllUsers(){
         // Return all userinfo attributes
         List<UserInfo> userInfoList = userInfoDAO.findAll();
         List<Authorities> authoritiesList = authoritiesDAO.findAll();
@@ -81,7 +82,7 @@ public class AdminController {
     }
 
     @RequestMapping(value ="/enableuser", method = RequestMethod.GET)
-    public ResponseEntity<?> enableUserAccount(@RequestParam String username, @RequestParam boolean enable){
+    public ResponseEntity<String> enableUserAccount(@RequestParam String username, @RequestParam boolean enable){
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
         UserDetails userDetails = manager.loadUserByUsername(username);
 
@@ -96,7 +97,7 @@ public class AdminController {
     }
 
     @RequestMapping(value ="/disableuser", method = RequestMethod.GET)
-    public ResponseEntity<?> disableUserAccount(@RequestParam String username, @RequestParam boolean disable){
+    public ResponseEntity<String> disableUserAccount(@RequestParam String username, @RequestParam boolean disable){
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
         UserDetails userDetails = manager.loadUserByUsername(username);
 
@@ -111,7 +112,7 @@ public class AdminController {
     }
 
     @RequestMapping(value ="/changerole", method = RequestMethod.GET)
-    public ResponseEntity<?> changeRole(@RequestParam String username, @RequestParam String role){
+    public ResponseEntity<String> changeRole(@RequestParam String username, @RequestParam String role){
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority(role));
 
@@ -129,13 +130,13 @@ public class AdminController {
     }
 
     @PostMapping(value = "/handlefileupload")
-    public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file){
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file){
         storageService.store(file);
         return ResponseEntity.ok("File uploaded Successfully");
     }
 
     @RequestMapping(value="/fetchallsecrets", method = RequestMethod.POST)
-    public ResponseEntity<?> fetchAllSecrets(){
+    public ResponseEntity<List<SecretEntry>> fetchAllSecrets(){
 
         return ResponseEntity.ok(secretDAO.findAll());
     }
