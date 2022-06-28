@@ -1,32 +1,31 @@
 package com.uvic.venus.controller;
 
+import com.uvic.venus.collections.UserInfoCollection;
+import com.uvic.venus.model.Authorities;
 import com.uvic.venus.model.UserInfo;
+import com.uvic.venus.model.Users;
+import com.uvic.venus.repository.AuthoritiesDAO;
+import com.uvic.venus.repository.SecretDAO;
 import com.uvic.venus.repository.UserInfoDAO;
+import com.uvic.venus.repository.UsersDAO;
 import com.uvic.venus.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin")
@@ -36,6 +35,15 @@ public class AdminController {
     UserInfoDAO userInfoDAO;
 
     @Autowired
+    UsersDAO usersDAO;
+
+    @Autowired
+    AuthoritiesDAO authoritiesDAO;
+  
+    @Autowired
+    SecretDAO secretDAO;
+
+    @Autowired
     DataSource dataSource;
 
     @Autowired
@@ -43,8 +51,33 @@ public class AdminController {
 
     @RequestMapping(value = "/fetchusers", method = RequestMethod.GET)
     public ResponseEntity<?> fetchAllUsers(){
+        // Return all userinfo attributes
         List<UserInfo> userInfoList = userInfoDAO.findAll();
-        return ResponseEntity.ok(userInfoList);
+        List<Authorities> authoritiesList = authoritiesDAO.findAll();
+        
+        // We return a collection of each user info and whether they
+        // are enabled or not.
+        List<UserInfoCollection> userInfoCollection = new ArrayList<>();
+        List<Users> usersList = usersDAO.findAll();
+        usersList.stream().forEach((user) -> {
+            userInfoList.stream().forEach((userinfo) -> {
+                if (user.getUsername().equals(userinfo.getUsername())) {
+                    userInfoCollection.add(new UserInfoCollection(user.getEnabled(), userinfo));
+                }
+            });
+        });
+
+        // We add the user's role to the list as well.
+        userInfoCollection.stream().forEach((userInfo) -> {
+            authoritiesList.stream().forEach((authority) -> {
+                if (authority.getUsername().equals(userInfo.getUserInfo().getUsername())) {
+                    // The authority entry is equivalent to the role semantics on vega-web
+                    userInfo.setRole(authority.getAuthority());
+                }
+            });
+        });
+
+        return ResponseEntity.ok(userInfoCollection);
     }
 
     @RequestMapping(value ="/enableuser", method = RequestMethod.GET)
@@ -59,7 +92,22 @@ public class AdminController {
         builder.disabled(!enable);
 
         manager.updateUser(builder.build());
-        return ResponseEntity.ok("User Updated Successfully");
+        return ResponseEntity.ok("User enabled successfully");
+    }
+
+    @RequestMapping(value ="/disableuser", method = RequestMethod.GET)
+    public ResponseEntity<?> disableUserAccount(@RequestParam String username, @RequestParam boolean disable){
+        JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+        UserDetails userDetails = manager.loadUserByUsername(username);
+
+        User.UserBuilder builder = User.builder();
+        builder.username(userDetails.getUsername());
+        builder.password(userDetails.getPassword());
+        builder.authorities(userDetails.getAuthorities());
+        builder.disabled(disable);
+
+        manager.updateUser(builder.build());
+        return ResponseEntity.ok("User disabled successfully");
     }
 
     @RequestMapping(value ="/changerole", method = RequestMethod.GET)
@@ -84,6 +132,12 @@ public class AdminController {
     public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file){
         storageService.store(file);
         return ResponseEntity.ok("File uploaded Successfully");
+    }
+
+    @RequestMapping(value="/fetchallsecrets", method = RequestMethod.POST)
+    public ResponseEntity<?> fetchAllSecrets(){
+
+        return ResponseEntity.ok(secretDAO.findAll());
     }
 
 }

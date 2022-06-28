@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.sql.DataSource;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -52,7 +51,7 @@ public class LoginController {
     //UserRepository userRepository;
 
     @GetMapping
-    public Principal reteievePrincipal(Principal principal) {
+    public Principal retrievePrincipal(Principal principal) {
         return principal;
     }
 

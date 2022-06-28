@@ -1,7 +1,6 @@
 package com.uvic.venus.storage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -56,6 +55,11 @@ public class StorageServiceImpl implements StorageService{
     @Override
     public Stream<Path> loadAll() {
         try {
+            // If directory does not exist, create it.
+            if (!Files.exists(this.rootLocation)) {
+                Files.createDirectory(this.rootLocation);
+            }
+
             return Files.walk(this.rootLocation, 1)
                     .filter(path -> !path.equals(this.rootLocation))
                     .map(this.rootLocation::relativize);
