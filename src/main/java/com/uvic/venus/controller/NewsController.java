@@ -1,6 +1,7 @@
 package com.uvic.venus.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +30,17 @@ public class NewsController {
     }
 
     @RequestMapping(value="/addnews", method = RequestMethod.POST)
-    public ResponseEntity<String> addNews(@RequestBody News news) {
-        newsDAO.save(news);
-        return ResponseEntity.ok("Successfully add news article");
+    public ResponseEntity<String> addNews(@RequestBody Map<String, Object> newsToAddJSON) {
+        News newsToAdd = new News();
+        newsToAdd.setNewsId((Integer) newsToAddJSON.get("newsid"));
+        newsToAdd.setTitle(newsToAddJSON.get("title").toString());
+        newsToAdd.setBodyText(newsToAddJSON.get("bodytext").toString());
+        newsToAdd.setNewsDate(newsToAddJSON.get("newsdate").toString());
+        newsToAdd.setTimePublished((Integer) newsToAddJSON.get("timepublished"));
+        newsToAdd.setAuthor(newsToAddJSON.get("author").toString());
+        
+        newsDAO.save(newsToAdd);
+        return ResponseEntity.ok("Successfully added news article");
     }
 
     @RequestMapping(value="/editnews", method=RequestMethod.POST)
@@ -57,8 +66,8 @@ public class NewsController {
     }
 
     @GetMapping("/deletenews/{id}")
-    public ResponseEntity<String> deleteNews(@PathVariable Integer newsid) {        
-        newsDAO.deleteById(newsid);
+    public ResponseEntity<String> deleteNews(@PathVariable Integer id) {        
+        newsDAO.deleteById(id);
         return ResponseEntity.ok("Successfully deleted news article");
     }
     
