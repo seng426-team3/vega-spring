@@ -65,9 +65,9 @@ public class NewsController {
         return ResponseEntity.ok("Successfully edited news article");
     }
 
-    @GetMapping("/deletenews/{id}")
-    public ResponseEntity<String> deleteNews(@PathVariable Integer id) {        
-        newsDAO.deleteById(id);
+    @RequestMapping(value="/deletenews", method=RequestMethod.POST)
+    public ResponseEntity<String> deleteNews(@RequestBody Map<String, Object> newsToDeleteJSON) {        
+        newsDAO.deleteById((Integer) newsToDeleteJSON.get("newsid"));
         return ResponseEntity.ok("Successfully deleted news article");
     }
     
