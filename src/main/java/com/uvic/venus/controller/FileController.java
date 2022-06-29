@@ -23,7 +23,7 @@ public class FileController {
     StorageService storageService;
 
     @GetMapping("/listfiles")
-    public ResponseEntity<?> listUploadedFiles() {
+    public ResponseEntity<List<String>> listUploadedFiles() {
         List<String> x = storageService.loadAll()
                 .map(path -> path.getFileName().toString())
                 .collect(Collectors.toList());

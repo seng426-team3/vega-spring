@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.uvic.venus.model.News;
 
 @Repository
-public interface NewsDAO extends JpaRepository<News, String> {
+public interface NewsDAO extends JpaRepository<News, Integer> {
 }

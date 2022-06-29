@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS secrets (
 
 -- News and Events
 CREATE TABLE IF NOT EXISTS news (
-    newsid VARCHAR(36) NOT NULL,
+    newsid BIGINT(255) NOT NULL,
     title VARCHAR(100) NOT NULL,
     bodytext LONGTEXT NOT NULL,
     newsdate VARCHAR(36) NOT NULL,
