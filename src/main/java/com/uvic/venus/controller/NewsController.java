@@ -36,7 +36,6 @@ public class NewsController {
         newsToAdd.setTitle(newsToAddJSON.get("title").toString());
         newsToAdd.setBodyText(newsToAddJSON.get("bodytext").toString());
         newsToAdd.setNewsDate(newsToAddJSON.get("newsdate").toString());
-        newsToAdd.setTimePublished((Integer) newsToAddJSON.get("timepublished"));
         newsToAdd.setAuthor(newsToAddJSON.get("author").toString());
         
         newsDAO.save(newsToAdd);

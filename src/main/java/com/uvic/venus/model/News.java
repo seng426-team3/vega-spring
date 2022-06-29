@@ -16,15 +16,7 @@ public class News {
     private String newsdate;
     private String author;
 
-    public News(String title, String bodytext, String newsdate, String author) {
-        this.newsid = UUID.randomUUID().toString();
-        this.title = title;
-        this.bodytext = bodytext;
-        this.newsdate = newsdate;
-        this.author = author;
-    }
-
-    public News(String newsid, String title, String bodytext, String newsdate, String author) {
+    public News(Integer newsid, String title, String bodytext, String newsdate, String author) {
         this.newsid = newsid;
         this.title = title;
         this.bodytext = bodytext;
