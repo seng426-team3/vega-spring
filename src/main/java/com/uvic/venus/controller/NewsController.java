@@ -44,24 +44,17 @@ public class NewsController {
     }
 
     @RequestMapping(value="/editnews", method=RequestMethod.POST)
-    public ResponseEntity<String> editNews(@RequestPart Integer newsid, @RequestPart String title, @RequestPart String bodytext, @RequestPart String author) {
-        News news = newsDAO.getById(newsid);
+    public ResponseEntity<String> editNews(@RequestBody Map<String, Object> newsToEditJSON) {
+        News newsToAdd = new News();
+        newsToAdd.setNewsId((Integer) newsToEditJSON.get("newsid"));
+        newsToAdd.setTitle(newsToEditJSON.get("title").toString());
+        newsToAdd.setBodyText(newsToEditJSON.get("bodytext").toString());
+        newsToAdd.setNewsDate(newsToEditJSON.get("newsdate").toString());
+        newsToAdd.setTimePublished((Integer) newsToEditJSON.get("timepublished"));
+        newsToAdd.setAuthor(newsToEditJSON.get("author").toString());
 
-        // Update news element for all non-null provided parameters
-        if (title != null) {
-            news.setTitle(title);
-        }
-
-        if (bodytext != null) {
-            news.setBodyText(bodytext);
-        }
-
-        if (author != null) {
-            news.setAuthor(author);
-        }
-
-        newsDAO.deleteById(newsid);
-        newsDAO.save(news);
+        newsDAO.deleteById((Integer) newsToEditJSON.get("newsid"));
+        newsDAO.save(newsToAdd);
         return ResponseEntity.ok("Successfully edited news article");
     }
 
