@@ -32,7 +32,7 @@ public class NewsController {
     @RequestMapping(value="/addnews", method = RequestMethod.POST)
     public ResponseEntity<String> addNews(@RequestBody Map<String, Object> newsToAddJSON) {
         News newsToAdd = new News();
-        newsToAdd.setNewsId((Integer) newsToAddJSON.get("newsid"));
+        newsToAdd.setNewsId((Integer) newsToAddJSON.get("timepublished"));
         newsToAdd.setTitle(newsToAddJSON.get("title").toString());
         newsToAdd.setBodyText(newsToAddJSON.get("bodytext").toString());
         newsToAdd.setNewsDate(newsToAddJSON.get("newsdate").toString());
