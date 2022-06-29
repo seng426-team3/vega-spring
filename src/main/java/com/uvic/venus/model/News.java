@@ -3,6 +3,7 @@ package com.uvic.venus.model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.UUID;
 
 @Entity
 @Table(name="news")
@@ -13,15 +14,21 @@ public class News {
     private String title;
     private String bodytext;
     private String newsdate;
-    private Integer timepublished;
     private String author;
 
-    public News(Integer newsid, String title, String bodytext, String newsdate, Integer timepublished, String author) {
+    public News(String title, String bodytext, String newsdate, String author) {
+        this.newsid = UUID.randomUUID().toString();
+        this.title = title;
+        this.bodytext = bodytext;
+        this.newsdate = newsdate;
+        this.author = author;
+    }
+
+    public News(String newsid, String title, String bodytext, String newsdate, String author) {
         this.newsid = newsid;
         this.title = title;
         this.bodytext = bodytext;
         this.newsdate = newsdate;
-        this.timepublished = timepublished;
         this.author = author;
     }
 
@@ -61,14 +68,6 @@ public class News {
         this.newsdate = newsdate;
     }
 
-    public Integer getTimePublished() {
-        return timepublished;
-    }
-
-    public void setTimePublished(Integer timepublished) {
-        this.timepublished = timepublished;
-    }
-
     public String getAuthor() {
         return author;
     }
@@ -84,7 +83,6 @@ public class News {
                 ", title='" + title + '\'' +
                 ", bodytext='" + bodytext + '\'' +
                 ", newsdate='" + newsdate + '\'' +
-                ", timepublished='" + timepublished.toString() + '\'' +
                 ", author='" + author + '\'' +
                 '}';
     }

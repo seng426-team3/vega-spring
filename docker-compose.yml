@@ -6,17 +6,30 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     image: "venus/beeple"
-    network_mode: "host"
+    ports:
+      - 8080:8080
+    depends_on: 
+      - venus-mysql
     environment:
       - MYSQL_USER=venus
       - MYSQL_PASSWORD=pass
-      - MYSQL_DATABASE=jdbc:mysql://127.0.0.1:3306/venus
+      - MYSQL_DATABASE=jdbc:mysql://venus-mysql:3306/venus?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false
       - SPRING_PROFILES_ACTIVE=prod
+    networks:
+      - common-network
+
   venus-mysql:
     image: mysql:latest
-    network_mode: "host"
+    ports:
+      - 3306:3306
     environment:
       - MYSQL_USER=venus
       - MYSQL_PASSWORD=pass
       - MYSQL_ROOT_PASSWORD=pass
       - MYSQL_DATABASE=venus
+    networks:
+      - common-network
+#Docker Networks
+networks:
+  common-network:
+    driver: bridge

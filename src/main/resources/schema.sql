@@ -43,6 +43,6 @@ CREATE TABLE IF NOT EXISTS news (
     title VARCHAR(100) NOT NULL,
     bodytext LONGTEXT NOT NULL,
     newsdate VARCHAR(36) NOT NULL,
-    timepublished INT(255) NOT NULL,
-    author VARCHAR(100) NOT NULL
+    author VARCHAR(100) NOT NULL,
+    PRIMARY KEY (newsid)
 );
