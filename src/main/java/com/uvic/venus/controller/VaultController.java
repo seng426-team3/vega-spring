@@ -53,7 +53,7 @@ public class VaultController {
     }
 
     @RequestMapping(value="/readsecret", method = RequestMethod.POST)
-    public ResponseEntity<?> readSecret(@RequestPart String secretid){        
+    public ResponseEntity<?> readSecret(@RequestParam String secretid){        
         SecretEntry secret = secretDAO.getById(secretid);
 
         byte[] file = secret.getSecretData();
@@ -63,7 +63,7 @@ public class VaultController {
     }
 
     @RequestMapping(value="/secretupdate", method = RequestMethod.POST)
-    public ResponseEntity<?> updateSecret(@RequestPart String secretid, @RequestPart(required=false) String secretname, @RequestPart(required=false) MultipartFile file) throws Exception {
+    public ResponseEntity<?> updateSecret(@RequestParam String secretid, @RequestParam(required=false) String secretname, @RequestPart(required=false) MultipartFile file) throws Exception {
         SecretEntry secret = secretDAO.getById(secretid);
 
         String response = "No updates made to secret";
@@ -95,7 +95,7 @@ public class VaultController {
     }
 
     @RequestMapping(value="/deletesecret", method = RequestMethod.POST)
-    public ResponseEntity<?> deleteSecret(@RequestPart String secretid){
+    public ResponseEntity<?> deleteSecret(@RequestParam String secretid){
         secretDAO.deleteById(secretid);
 
         return ResponseEntity.ok("Successfully deleted secret");
