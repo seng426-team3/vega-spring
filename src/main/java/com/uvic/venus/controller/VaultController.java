@@ -2,6 +2,7 @@ package com.uvic.venus.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -25,9 +26,10 @@ public class VaultController {
     @Autowired
     JwtUtil jwtUtil;
 
-    @RequestMapping(value="/fetchsecrets", method = RequestMethod.POST)
-    public ResponseEntity<?> fetchSecrets(@RequestPart String token){
-        String username = jwtUtil.extractUsername(token);
+    @RequestMapping(value="/fetchsecrets", method = RequestMethod.GET)
+    public ResponseEntity<?> fetchSecrets(@RequestHeader (name="authorization") String jwt){
+        // Remove the "Bearer " prefix off the JWT so that jwtUtil accepts it
+        String username = jwtUtil.extractUsername(jwt.substring(7));
 
         List<SecretEntry> userSecrets= secretDAO.findByUsername(username);
         
@@ -35,8 +37,9 @@ public class VaultController {
     }
 
     @RequestMapping(value="/createsecret", method = RequestMethod.POST)
-    public ResponseEntity<?> createSecret(@RequestPart String secretname, @RequestPart String token, @RequestPart MultipartFile file) throws Exception{
-        String username = jwtUtil.extractUsername(token);
+    public ResponseEntity<?> createSecret(@RequestHeader (name="authorization") String jwt, @RequestPart String secretname, @RequestPart MultipartFile file) throws Exception{
+        // Remove the "Bearer " prefix off the JWT so that jwtUtil accepts it
+        String username = jwtUtil.extractUsername(jwt.substring(7));
         String fileName = file.getOriginalFilename();
         String fileEnd = fileName.substring(fileName.indexOf("."));
         byte[] secretData = file.getBytes();

@@ -135,7 +135,7 @@ public class AdminController {
         return ResponseEntity.ok("File uploaded Successfully");
     }
 
-    @RequestMapping(value="/fetchallsecrets", method = RequestMethod.POST)
+    @RequestMapping(value="/fetchallsecrets", method = RequestMethod.GET)
     public ResponseEntity<List<SecretEntry>> fetchAllSecrets(){
 
         return ResponseEntity.ok(secretDAO.findAll());
