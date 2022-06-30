@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public class VaultController {
     }
 
     @RequestMapping(value="/createsecret", method = RequestMethod.POST)
-    public ResponseEntity<?> createSecret(@RequestHeader (name="authorization") String jwt, @RequestPart String secretname, @RequestPart MultipartFile file) throws Exception{
+    public ResponseEntity<?> createSecret(@RequestHeader (name="authorization") String jwt, @RequestParam("secretname") String secretname, @RequestPart MultipartFile file) throws Exception{
         // Remove the "Bearer " prefix off the JWT so that jwtUtil accepts it
         String username = jwtUtil.extractUsername(jwt.substring(7));
         String fileName = file.getOriginalFilename();
