@@ -99,4 +99,15 @@ public class VaultController {
 
         return ResponseEntity.ok("Successfully deleted secret");
     }
+
+    @RequestMapping(value="/sharesecret", method = RequestMethod.POST)
+    public ResponseEntity<?> shareSecret(@RequestPart String secretid, @RequestPart String targetuser){        
+        SecretEntry secret = secretDAO.getById(secretid);
+
+        SecretEntry newSecretEntry = new SecretEntry(targetuser, secret.getSecretName(), secret.getFileType(), secret.getSecretData());
+
+        secretDAO.save(newSecretEntry);
+
+        return ResponseEntity.ok("Successully shared with user");
+    }
 }
