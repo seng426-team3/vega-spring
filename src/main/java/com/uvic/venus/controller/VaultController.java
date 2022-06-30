@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 
 import java.util.List;
@@ -101,7 +102,7 @@ public class VaultController {
     }
 
     @RequestMapping(value="/sharesecret", method = RequestMethod.POST)
-    public ResponseEntity<?> shareSecret(@RequestPart String secretid, @RequestPart String targetuser){        
+    public ResponseEntity<?> shareSecret(@RequestParam String secretid, @RequestParam String targetuser){        
         SecretEntry secret = secretDAO.getById(secretid);
 
         SecretEntry newSecretEntry = new SecretEntry(targetuser, secret.getSecretName(), secret.getFileType(), secret.getSecretData());
