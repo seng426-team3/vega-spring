@@ -94,4 +94,24 @@ public class VaultControllerTests {
         Assertions.assertEquals(secretName, resultList.get(1).getSecretName());
         Assertions.assertEquals(username, resultList.get(1).getUsername());
     }
+
+    @Test
+    public void testSecretDeletion() {
+        // Test data
+        String secretid = "testID";
+    
+        // Mock method
+        Mockito.doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                testEntries.remove(0);
+                return null;
+            }
+        }).when(vaultController.secretDAO).deleteById(secretid);
+
+        vaultController.deleteSecret(secretid);
+
+        // Assert that entry was removed
+        Assertions.assertEquals(0, testEntries.size());
+    }
 }
