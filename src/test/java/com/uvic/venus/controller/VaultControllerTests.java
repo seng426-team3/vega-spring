@@ -191,4 +191,28 @@ public class VaultControllerTests {
         // Assert that entry was removed
         Assertions.assertEquals(0, testEntries.size());
     }
+
+    @Test
+    public void testSecretSharing() {
+        // Test data
+        String targetUser = "newuser@venus.com";
+        String secretID = "testID";
+
+        // Mock methods
+        Mockito.when(vaultController.secretDAO.getById(secretID)).thenReturn(testEntries.get(0));
+        Mockito.when(vaultController.secretDAO.save(Mockito.any(SecretEntry.class))).thenAnswer(new Answer<SecretEntry>() {
+            @Override
+            public SecretEntry answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                testEntries.add((SecretEntry) args[0]);
+                return(SecretEntry) args[0];
+            }
+        });
+
+        vaultController.shareSecret(secretID, targetUser);
+
+        // Assert that secret was shared
+        Assertions.assertEquals(2, testEntries.size());
+        Assertions.assertEquals(targetUser, testEntries.get(1).getUsername());
+    }
 }
