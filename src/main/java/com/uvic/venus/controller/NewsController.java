@@ -5,12 +5,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uvic.venus.model.News;
@@ -24,7 +21,7 @@ public class NewsController {
     NewsDAO newsDAO;
 
     @RequestMapping(value="/fetchnews", method = RequestMethod.GET)
-    public ResponseEntity<?> fetchAllNews() {
+    public ResponseEntity<List<News>> fetchAllNews() {
         List<News> newsList = newsDAO.findAll();
         return ResponseEntity.ok(newsList);
     }

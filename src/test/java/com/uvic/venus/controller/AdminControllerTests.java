@@ -1,6 +1,7 @@
 package com.uvic.venus.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -15,11 +16,18 @@ import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,20 +38,22 @@ import com.uvic.venus.storage.StorageService;
 import com.uvic.venus.model.UserInfo;
 import com.uvic.venus.model.Users;
 import com.uvic.venus.model.Authorities;
+import com.uvic.venus.model.SecretEntry;
 import com.uvic.venus.repository.AuthoritiesDAO;
 import com.uvic.venus.repository.SecretDAO;
 import com.uvic.venus.repository.UserInfoDAO;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(User.UserBuilder.class)
 public class AdminControllerTests {
 
-    private AdminController adminController;
-    @Mock private JdbcUserDetailsManager jdbcUserDetailsManager;
+    AdminController adminController;
     @Mock private MultipartFile multipartFile;
     @InjectMocks private UserDetails userDetails;
 
     @BeforeEach
     public void setup() {
-        adminController = new AdminController();
+        adminController = spy(AdminController.class);
         adminController.userInfoDAO = mock(UserInfoDAO.class);
         adminController.usersDAO = mock(UsersDAO.class);
         adminController.authoritiesDAO = mock(AuthoritiesDAO.class);
@@ -149,20 +159,87 @@ public class AdminControllerTests {
         }
     }
 
-    /*@Test
-    public void testEnableUserWithValidParameters() {
+    @Test
+    public void testEnableUserWithValidParameters() throws Exception {
         // Given
-        when(userDetails.getAuthorities()).thenAnswer(new ArrayList<GrantedAuthority>());
-        when(userDetails.getPassword()).thenReturn("$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a");
-        when(userDetails.getUsername()).thenReturn("user1");
-        when(jdbcUserDetailsManager.loadUserByUsername("user1")).thenReturn(userDetails);
+        String test_username = "testuser1";
+        UserDetails testUserDetails = mock(UserDetails.class);
+        JdbcUserDetailsManager manager = mock(JdbcUserDetailsManager.class);
+        PowerMockito.whenNew(JdbcUserDetailsManager.class).withArguments(adminController.dataSource).thenReturn(manager);
+
+        // Setup dummy authorities list
+        final List<GrantedAuthority> dummyList = new ArrayList<GrantedAuthority>();
+        dummyList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        Answer<List<GrantedAuthority>> dummyAuthorities = new Answer<List<GrantedAuthority>>() {
+            public List<GrantedAuthority> answer(InvocationOnMock invocation) throws Throwable {
+                return dummyList;
+            };
+        };
+
+        when(testUserDetails.getAuthorities()).thenAnswer(dummyAuthorities);       
+        when(testUserDetails.getPassword()).thenReturn("$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a");
+        when(testUserDetails.getUsername()).thenReturn("user1");
+        doReturn(testUserDetails).when(adminController).loadUserByUsername(any(), any());
+        doReturn(true).when(adminController).updateUser(any(), any());
 
         // When 
-        ResponseEntity<String> response = adminController.enableUserAccount("user1", true);
+        ResponseEntity<String> response = adminController.enableUserAccount(test_username, true);
 
         // Then
         assertEquals(response.getBody(), "User enabled successfully");
-    }*/
+    }
+
+    @Test
+    public void testDisableUserWithValidParameters() throws Exception {
+        // Given
+        String test_username = "testuser2";
+        UserDetails testUserDetails = mock(UserDetails.class);
+        JdbcUserDetailsManager manager = mock(JdbcUserDetailsManager.class);
+        PowerMockito.whenNew(JdbcUserDetailsManager.class).withArguments(adminController.dataSource).thenReturn(manager);
+
+        // Setup dummy authorities list
+        final List<GrantedAuthority> dummyList = new ArrayList<GrantedAuthority>();
+        dummyList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        Answer<List<GrantedAuthority>> dummyAuthorities = new Answer<List<GrantedAuthority>>() {
+            public List<GrantedAuthority> answer(InvocationOnMock invocation) throws Throwable {
+                return dummyList;
+            };
+        };
+
+        when(testUserDetails.getAuthorities()).thenAnswer(dummyAuthorities);       
+        when(testUserDetails.getPassword()).thenReturn("$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a");
+        when(testUserDetails.getUsername()).thenReturn("user1");
+        doReturn(testUserDetails).when(adminController).loadUserByUsername(any(), any());
+        doReturn(true).when(adminController).updateUser(any(), any());
+
+        // When
+        ResponseEntity<String> response = adminController.disableUserAccount(test_username, true);
+
+        // Then
+        assertEquals(response.getBody(), "User disabled successfully");
+    }
+
+    @Test
+    public void testChangeRoleWithValidParameters() throws Exception {
+        // Given
+        String test_username = "testuser3";
+        UserDetails testUserDetails = mock(UserDetails.class);
+        String test_role = "ROLE_STAFF";
+        JdbcUserDetailsManager manager = mock(JdbcUserDetailsManager.class);
+        PowerMockito.whenNew(JdbcUserDetailsManager.class).withArguments(adminController.dataSource).thenReturn(manager);
+
+        when(testUserDetails.getPassword()).thenReturn("$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a");
+        when(testUserDetails.getUsername()).thenReturn("user1");
+        when(testUserDetails.isEnabled()).thenReturn(true);
+        doReturn(testUserDetails).when(adminController).loadUserByUsername(any(), any());
+        doReturn(true).when(adminController).updateUser(any(), any());
+
+        // When
+        ResponseEntity<String> response = adminController.changeRole(test_username, test_role);
+
+        // Then
+        assertEquals(response.getBody(), "User Updated Successfully");
+    }
 
     @Test
     public void testHandleFileUploadSuccessful() {
@@ -176,10 +253,16 @@ public class AdminControllerTests {
 
     @Test
     public void testFetchAllSecrets() {
-        // Given & When
-        // TODO COMPLETE
-        //ResponseEntity<List<SecretEntry>> response = adminController.fetchAllSecrets();
+        // Given
+        List<SecretEntry> testSecretEntrieslist = new ArrayList<>();
+        testSecretEntrieslist.add(new SecretEntry("user1", "secret1", "text", "text".getBytes()));
+        testSecretEntrieslist.add(new SecretEntry("user2", "secret2", "text", "text".getBytes()));
+        when(adminController.secretDAO.findAll()).thenReturn(testSecretEntrieslist);
+
+        // When
+        ResponseEntity<List<SecretEntry>> response = adminController.fetchAllSecrets();
 
         // Then
+        assertEquals(testSecretEntrieslist, response.getBody());
     }
 }

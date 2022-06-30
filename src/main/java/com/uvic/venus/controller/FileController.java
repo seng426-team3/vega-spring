@@ -24,9 +24,7 @@ public class FileController {
 
     @GetMapping("/listfiles")
     public ResponseEntity<List<String>> listUploadedFiles() {
-        List<String> x = storageService.loadAll()
-                .map(path -> path.getFileName().toString())
-                .collect(Collectors.toList());
+        List<String> x = this.loadAllUploadedFiles();
         System.out.println("Entered into files");
         return ResponseEntity.ok(x);
     }
@@ -38,5 +36,11 @@ public class FileController {
         Resource file = storageService.loadAsResource(filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    }
+
+    public List<String> loadAllUploadedFiles() {
+        return storageService.loadAll()
+        .map(path -> path.getFileName().toString())
+        .collect(Collectors.toList());
     }
 }
