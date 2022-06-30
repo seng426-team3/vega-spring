@@ -1,5 +1,6 @@
 package com.uvic.venus.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,8 @@ public class VaultControllerTests {
     public void setup() {
         testEntries.clear();
 
+        byte[] testData = {69, 121};
+
         // Set up mock classes
         testFile = Mockito.mock(MultipartFile.class);
         vaultController = new VaultController();
@@ -37,7 +40,7 @@ public class VaultControllerTests {
         Mockito.when(testFile.getOriginalFilename()).thenReturn("test.txt");
 
         // Set up mock database as a List
-        testSecret = new SecretEntry("testID", "testuser@venus.com", "Test Secret", ".txt", creationDate, null);
+        testSecret = new SecretEntry("testID", "testuser@venus.com", "Test Secret", ".txt", creationDate, testData);
 
         testEntries.add(testSecret);
     }
@@ -93,6 +96,80 @@ public class VaultControllerTests {
         Assertions.assertEquals(2, resultList.size());
         Assertions.assertEquals(secretName, resultList.get(1).getSecretName());
         Assertions.assertEquals(username, resultList.get(1).getUsername());
+    }
+
+    @Test
+    public void testSecretReading() throws IOException {
+        ResponseEntity<?> result;
+
+        // Test data
+        String secretid = "testID";
+
+        // Mock method
+        Mockito.when(vaultController.secretDAO.getById(secretid)).thenReturn(testEntries.get(0));
+
+        result = vaultController.readSecret(secretid);
+
+        // Assert that the data is being read
+        Assertions.assertEquals(testEntries.get(0).getSecretData(), result.getBody());
+    }
+
+    @Test
+    public void testSecretUpdating() throws Exception {
+        // Test data
+        String newName = "Good Secret";
+        String secretID = "testID";
+
+        // Mock methods
+        Mockito.when(vaultController.secretDAO.getById(secretID)).thenReturn(testEntries.get(0));
+        Mockito.when(vaultController.secretDAO.save(Mockito.any(SecretEntry.class))).thenAnswer(new Answer<SecretEntry>() {
+            @Override
+            public SecretEntry answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                testEntries.add((SecretEntry) args[0]);
+                return(SecretEntry) args[0];
+            }
+        });
+        Mockito.doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                testEntries.remove(0);
+                return null;
+            }
+        }).when(vaultController.secretDAO).deleteById(secretID);
+
+        vaultController.updateSecret(secretID, newName, null);
+
+        Assertions.assertEquals(newName, testEntries.get(0).getSecretName());
+    }
+
+    @Test
+    public void testSecretNotUpdating() throws Exception {
+        // Test data
+        String secretName = "Test Secret";
+        String secretID = "testID";
+
+        // Mock methods
+        Mockito.when(vaultController.secretDAO.getById(secretID)).thenReturn(testEntries.get(0));
+        Mockito.when(vaultController.secretDAO.save(Mockito.any(SecretEntry.class))).thenAnswer(new Answer<SecretEntry>() {
+            @Override
+            public SecretEntry answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                testEntries.add((SecretEntry) args[0]);
+                return(SecretEntry) args[0];
+            }
+        });
+        Mockito.doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                testEntries.remove(0);
+                return null;
+            }
+        }).when(vaultController.secretDAO).deleteById(secretID);
+
+        vaultController.updateSecret(secretID, null, null);
+
+        Assertions.assertEquals(secretName, testEntries.get(0).getSecretName());
     }
 
     @Test
