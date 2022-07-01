@@ -32,7 +32,7 @@ public class NewsController {
     @RequestMapping(value="/addnews", method = RequestMethod.POST)
     public ResponseEntity<String> addNews(@RequestBody Map<String, Object> newsToAddJSON) {
         News newsToAdd = new News();
-        newsToAdd.setNewsId((Integer) newsToAddJSON.get("newsid"));
+        newsToAdd.setNewsId((Integer) newsToAddJSON.get("timepublished"));
         newsToAdd.setTitle(newsToAddJSON.get("title").toString());
         newsToAdd.setBodyText(newsToAddJSON.get("bodytext").toString());
         newsToAdd.setNewsDate(newsToAddJSON.get("newsdate").toString());
@@ -44,30 +44,23 @@ public class NewsController {
     }
 
     @RequestMapping(value="/editnews", method=RequestMethod.POST)
-    public ResponseEntity<String> editNews(@RequestPart Integer newsid, @RequestPart String title, @RequestPart String bodytext, @RequestPart String author) {
-        News news = newsDAO.getById(newsid);
+    public ResponseEntity<String> editNews(@RequestBody Map<String, Object> newsToEditJSON) {
+        News newsToAdd = new News();
+        newsToAdd.setNewsId((Integer) newsToEditJSON.get("newsid"));
+        newsToAdd.setTitle(newsToEditJSON.get("title").toString());
+        newsToAdd.setBodyText(newsToEditJSON.get("bodytext").toString());
+        newsToAdd.setNewsDate(newsToEditJSON.get("newsdate").toString());
+        newsToAdd.setTimePublished((Integer) newsToEditJSON.get("timepublished"));
+        newsToAdd.setAuthor(newsToEditJSON.get("author").toString());
 
-        // Update news element for all non-null provided parameters
-        if (title != null) {
-            news.setTitle(title);
-        }
-
-        if (bodytext != null) {
-            news.setBodyText(bodytext);
-        }
-
-        if (author != null) {
-            news.setAuthor(author);
-        }
-
-        newsDAO.deleteById(newsid);
-        newsDAO.save(news);
+        newsDAO.deleteById((Integer) newsToEditJSON.get("newsid"));
+        newsDAO.save(newsToAdd);
         return ResponseEntity.ok("Successfully edited news article");
     }
 
-    @GetMapping("/deletenews/{id}")
-    public ResponseEntity<String> deleteNews(@PathVariable Integer id) {        
-        newsDAO.deleteById(id);
+    @RequestMapping(value="/deletenews", method=RequestMethod.POST)
+    public ResponseEntity<String> deleteNews(@RequestBody Map<String, Object> newsToDeleteJSON) {        
+        newsDAO.deleteById((Integer) newsToDeleteJSON.get("newsid"));
         return ResponseEntity.ok("Successfully deleted news article");
     }
     
