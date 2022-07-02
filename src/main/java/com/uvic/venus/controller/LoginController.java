@@ -55,6 +55,10 @@ public class LoginController {
         return principal;
     }
 
+    public UserDetails loadByUserName(JdbcUserDetailsManager user, String username) {
+        return user.loadUserByUsername(username);
+    }
+
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         System.out.println("Entered into createAuthenticationRequests");
@@ -68,13 +72,17 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not Found");
         }
         JdbcUserDetailsManager user = new JdbcUserDetailsManager(dataSource);
-        UserDetails userDetails = user.loadUserByUsername(authenticationRequest.getUsername());
+        UserDetails userDetails = loadByUserName(user, authenticationRequest.getUsername());
 
         final String jwt = jwtUtil.generateToken(userDetails);
 
         Object[] authorities = userDetails.getAuthorities().toArray();
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt, authorities));
+    }
+
+    public void createUserData(JdbcUserDetailsManager dataManager, User.UserBuilder builder) {
+        dataManager.createUser(builder.build());
     }
 
     @RequestMapping(value="/register", method = RequestMethod.POST)
@@ -90,7 +98,7 @@ public class LoginController {
         builder.password(user.getPassword());
         builder.username(user.getUsername());
         builder.authorities(authorities);
-        dataManager.createUser(builder.build());
+        createUserData(dataManager, builder);
 
         UserInfo userinfo = new UserInfo(user.getUsername(), user.getFirstname(), user.getLastname());
         System.out.println(userinfo);
@@ -98,6 +106,4 @@ public class LoginController {
 
         return ResponseEntity.ok("User Created Successfully");
     }
-
-
 }
