@@ -7,6 +7,8 @@ import com.uvic.venus.model.RegisterUserInfo;
 import com.uvic.venus.model.UserInfo;
 import com.uvic.venus.repository.UserInfoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
 import java.security.Principal;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,18 +94,22 @@ public class LoginController {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        //User user1 = new User(user.getUsername(), passwordEncoder.encode(user.getPassword()), authorities);
         User.UserBuilder builder = User.builder();
         builder.disabled(true);
         builder.passwordEncoder(passwordEncoder::encode);
         builder.password(user.getPassword());
         builder.username(user.getUsername());
         builder.authorities(authorities);
-        createUserData(dataManager, builder);
 
-        UserInfo userinfo = new UserInfo(user.getUsername(), user.getFirstname(), user.getLastname());
-        System.out.println(userinfo);
-        userInfoDAO.save(userinfo);
+        try {
+            createUserData(dataManager, builder);
+            UserInfo userinfo = new UserInfo(user.getUsername(), user.getFirstname(), user.getLastname());
+            System.out.println(userinfo);
+            userInfoDAO.save(userinfo);
+        } catch (DuplicateKeyException error) {
+            System.out.println("Error: "+ error.toString());
+            return ResponseEntity.badRequest().body("Error: User already registered.");
+        }
 
         return ResponseEntity.ok("User Created Successfully");
     }

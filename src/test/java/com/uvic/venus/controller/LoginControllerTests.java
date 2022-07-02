@@ -112,6 +112,7 @@ public class LoginControllerTests {
     ResponseEntity<?> response = loginController.registerUser(user);
 
     // Then
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("Error: User already registered.", response.getBody());
   }
 }
