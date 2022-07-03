@@ -46,3 +46,10 @@ CREATE TABLE IF NOT EXISTS news (
     timepublished INT(255) NOT NULL,
     author VARCHAR(100) NOT NULL
 );
+
+-- Contact-Us
+CREATE TABLE IF NOT EXISTS contactus (
+    user_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    message LONGTEXT NOT NULL
+    );
