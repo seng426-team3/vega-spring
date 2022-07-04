@@ -9,14 +9,14 @@ import javax.persistence.Table;
 public class News {
 
     @Id
-    private String newsid;
+    private Integer newsid;
     private String title;
     private String bodytext;
     private String newsdate;
     private Integer timepublished;
     private String author;
 
-    public News(String newsid, String title, String bodytext, String newsdate, Integer timepublished, String author) {
+    public News(Integer newsid, String title, String bodytext, String newsdate, Integer timepublished, String author) {
         this.newsid = newsid;
         this.title = title;
         this.bodytext = bodytext;
@@ -29,11 +29,11 @@ public class News {
 
     }
 
-    public String getNewsId() {
+    public Integer getNewsId() {
         return newsid;
     }
 
-    public void setNewsId(String newsid) {
+    public void setNewsId(Integer newsid) {
         this.newsid = newsid;
     }
 

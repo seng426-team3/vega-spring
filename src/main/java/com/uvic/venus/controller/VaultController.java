@@ -2,8 +2,10 @@ package com.uvic.venus.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 
 import java.util.List;
@@ -25,9 +27,10 @@ public class VaultController {
     @Autowired
     JwtUtil jwtUtil;
 
-    @RequestMapping(value="/fetchsecrets", method = RequestMethod.POST)
-    public ResponseEntity<?> fetchSecrets(@RequestPart String token){
-        String username = jwtUtil.extractUsername(token);
+    @RequestMapping(value="/fetchsecrets", method = RequestMethod.GET)
+    public ResponseEntity<?> fetchSecrets(@RequestHeader (name="authorization") String jwt){
+        // Remove the "Bearer " prefix off the JWT so that jwtUtil accepts it
+        String username = jwtUtil.extractUsername(jwt.substring(7));
 
         List<SecretEntry> userSecrets= secretDAO.findByUsername(username);
         
@@ -35,8 +38,9 @@ public class VaultController {
     }
 
     @RequestMapping(value="/createsecret", method = RequestMethod.POST)
-    public ResponseEntity<?> createSecret(@RequestPart String secretname, @RequestPart String token, @RequestPart MultipartFile file) throws Exception{
-        String username = jwtUtil.extractUsername(token);
+    public ResponseEntity<?> createSecret(@RequestHeader (name="authorization") String jwt, @RequestParam("secretname") String secretname, @RequestPart MultipartFile file) throws Exception{
+        // Remove the "Bearer " prefix off the JWT so that jwtUtil accepts it
+        String username = jwtUtil.extractUsername(jwt.substring(7));
         String fileName = file.getOriginalFilename();
         String fileEnd = fileName.substring(fileName.indexOf("."));
         byte[] secretData = file.getBytes();
@@ -49,7 +53,7 @@ public class VaultController {
     }
 
     @RequestMapping(value="/readsecret", method = RequestMethod.POST)
-    public ResponseEntity<?> readSecret(@RequestPart String secretid){        
+    public ResponseEntity<?> readSecret(@RequestParam String secretid){        
         SecretEntry secret = secretDAO.getById(secretid);
 
         byte[] file = secret.getSecretData();
@@ -59,7 +63,7 @@ public class VaultController {
     }
 
     @RequestMapping(value="/secretupdate", method = RequestMethod.POST)
-    public ResponseEntity<?> updateSecret(@RequestPart String secretid, @RequestPart(required=false) String secretname, @RequestPart(required=false) MultipartFile file) throws Exception {
+    public ResponseEntity<?> updateSecret(@RequestParam String secretid, @RequestParam(required=false) String secretname, @RequestPart(required=false) MultipartFile file) throws Exception {
         SecretEntry secret = secretDAO.getById(secretid);
 
         String response = "No updates made to secret";
@@ -91,9 +95,20 @@ public class VaultController {
     }
 
     @RequestMapping(value="/deletesecret", method = RequestMethod.POST)
-    public ResponseEntity<?> deleteSecret(@RequestPart String secretid){
+    public ResponseEntity<?> deleteSecret(@RequestParam String secretid){
         secretDAO.deleteById(secretid);
 
         return ResponseEntity.ok("Successfully deleted secret");
+    }
+    
+    @RequestMapping(value="/sharesecret", method = RequestMethod.POST)
+    public ResponseEntity<?> shareSecret(@RequestParam String secretid, @RequestParam String targetuser){        
+        SecretEntry secret = secretDAO.getById(secretid);
+
+        SecretEntry newSecretEntry = new SecretEntry(targetuser, secret.getSecretName(), secret.getFileType(), secret.getSecretData());
+
+        secretDAO.save(newSecretEntry);
+
+        return ResponseEntity.ok("Successully shared with user");
     }
 }
