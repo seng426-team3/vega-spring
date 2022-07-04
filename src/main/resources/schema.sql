@@ -24,7 +24,6 @@ CREATE TABLE IF NOT EXISTS userinfo (
 );
 
 -- Mega-table approach
--- Need to figure out new way of holding secret data. May need to make a service
 CREATE TABLE IF NOT EXISTS secrets (
     secretid VARCHAR(36) NOT NULL,
     username VARCHAR(50) NOT NULL,
