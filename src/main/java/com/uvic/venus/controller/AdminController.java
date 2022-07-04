@@ -84,7 +84,7 @@ public class AdminController {
     @RequestMapping(value ="/enableuser", method = RequestMethod.GET)
     public ResponseEntity<String> enableUserAccount(@RequestParam String username, @RequestParam boolean enable){
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
-        UserDetails userDetails = manager.loadUserByUsername(username);
+        UserDetails userDetails = this.loadUserByUsername(manager, username);
 
         User.UserBuilder builder = User.builder();
         builder.username(userDetails.getUsername());
@@ -92,14 +92,14 @@ public class AdminController {
         builder.authorities(userDetails.getAuthorities());
         builder.disabled(!enable);
 
-        manager.updateUser(builder.build());
+        this.updateUser(manager, builder.build());
         return ResponseEntity.ok("User enabled successfully");
     }
 
     @RequestMapping(value ="/disableuser", method = RequestMethod.GET)
     public ResponseEntity<String> disableUserAccount(@RequestParam String username, @RequestParam boolean disable){
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
-        UserDetails userDetails = manager.loadUserByUsername(username);
+        UserDetails userDetails = this.loadUserByUsername(manager, username);
 
         User.UserBuilder builder = User.builder();
         builder.username(userDetails.getUsername());
@@ -107,7 +107,7 @@ public class AdminController {
         builder.authorities(userDetails.getAuthorities());
         builder.disabled(disable);
 
-        manager.updateUser(builder.build());
+        this.updateUser(manager, builder.build());
         return ResponseEntity.ok("User disabled successfully");
     }
 
@@ -117,7 +117,7 @@ public class AdminController {
         authorities.add(new SimpleGrantedAuthority(role));
 
         JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
-        UserDetails userDetails = manager.loadUserByUsername(username);
+        UserDetails userDetails = this.loadUserByUsername(manager, username);
 
         User.UserBuilder builder = User.builder();
         builder.username(userDetails.getUsername());
@@ -125,7 +125,7 @@ public class AdminController {
         builder.authorities(authorities);
         builder.disabled(userDetails.isEnabled());
 
-        manager.updateUser(builder.build());
+        this.updateUser(manager, builder.build());
         return ResponseEntity.ok("User Updated Successfully");
     }
 
@@ -137,8 +137,15 @@ public class AdminController {
 
     @RequestMapping(value="/fetchallsecrets", method = RequestMethod.GET)
     public ResponseEntity<List<SecretEntry>> fetchAllSecrets(){
-
         return ResponseEntity.ok(secretDAO.findAll());
     }
 
+    public UserDetails loadUserByUsername(JdbcUserDetailsManager manager, String username) {
+        return manager.loadUserByUsername(username);
+    }
+
+    public boolean updateUser(JdbcUserDetailsManager manager, UserDetails userDetails) {
+        manager.updateUser(userDetails);
+        return true;
+    }
 }
