@@ -60,5 +60,4 @@ public class NewsController {
         newsDAO.deleteById((Integer) newsToDeleteJSON.get("newsid"));
         return ResponseEntity.ok("Successfully deleted news article");
     }
-    
 }
