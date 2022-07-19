@@ -49,7 +49,7 @@ public class VaultController {
 
         secretDAO.save(newSecretEntry);
 
-        return ResponseEntity.ok("Successfully created a secret");
+        return ResponseEntity.ok(newSecretEntry);
     }
 
     @RequestMapping(value="/readsecret", method = RequestMethod.POST)
