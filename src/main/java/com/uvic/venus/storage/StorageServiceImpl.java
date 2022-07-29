@@ -1,7 +1,6 @@
 package com.uvic.venus.storage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -44,8 +43,7 @@ public class StorageServiceImpl implements StorageService{
                         "Cannot store file outside current directory.");
             }
             try (InputStream inputStream = file.getInputStream()) {
-                Files.copy(inputStream, destinationFile,
-                        StandardCopyOption.REPLACE_EXISTING);
+                this.copyInputStreamIntoDestinationFile(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
             }
         }
         catch (IOException e) {
@@ -56,9 +54,10 @@ public class StorageServiceImpl implements StorageService{
     @Override
     public Stream<Path> loadAll() {
         try {
-            return Files.walk(this.rootLocation, 1)
-                    .filter(path -> !path.equals(this.rootLocation))
-                    .map(this.rootLocation::relativize);
+            // If directory does not exist, create it.
+            this.createNewDirectoryIfNotExists();
+
+            return this.returnAllFiles();
         }
         catch (IOException e) {
             throw new StorageException("Failed to read stored files", e);
@@ -103,5 +102,23 @@ public class StorageServiceImpl implements StorageService{
         catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
         }
+    }
+
+    public long copyInputStreamIntoDestinationFile(InputStream inputStream, Path destinationFile, StandardCopyOption copyOption) throws IOException {
+        return Files.copy(inputStream, destinationFile, copyOption);       
+    }
+
+    public boolean createNewDirectoryIfNotExists() throws IOException {
+            // If directory does not exist, create it.
+            if (!Files.exists(this.rootLocation)) {
+                Files.createDirectory(this.rootLocation);
+            }
+            return true;
+    }
+
+    public Stream<Path> returnAllFiles() throws IOException {
+        return Files.walk(this.rootLocation, 1)
+        .filter(path -> !path.equals(this.rootLocation))
+        .map(this.rootLocation::relativize);       
     }
 }

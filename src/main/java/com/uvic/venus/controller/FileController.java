@@ -8,12 +8,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,10 +23,8 @@ public class FileController {
     StorageService storageService;
 
     @GetMapping("/listfiles")
-    public ResponseEntity<?> listUploadedFiles() {
-        List<String> x = storageService.loadAll()
-                .map(path -> path.getFileName().toString())
-                .collect(Collectors.toList());
+    public ResponseEntity<List<String>> listUploadedFiles() {
+        List<String> x = this.loadAllUploadedFiles();
         System.out.println("Entered into files");
         return ResponseEntity.ok(x);
     }
@@ -41,5 +36,11 @@ public class FileController {
         Resource file = storageService.loadAsResource(filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    }
+
+    public List<String> loadAllUploadedFiles() {
+        return storageService.loadAll()
+        .map(path -> path.getFileName().toString())
+        .collect(Collectors.toList());
     }
 }

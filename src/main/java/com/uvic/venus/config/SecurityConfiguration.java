@@ -36,12 +36,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf()
                 .disable()
-                .authorizeRequests().antMatchers("/authenticate", "/register")
+                .authorizeRequests().antMatchers("/authenticate", "/register", "/news/fetchnews","/contactus/addcontactus")
                 .permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/files/**").hasAnyRole("ADMIN", "STAFF")
+                .authorizeRequests().antMatchers("/files/**", "/news/addnews", "/news/deletenews", "/news/editnews").hasAnyRole("ADMIN", "STAFF")
+                .and()
+                .authorizeRequests().antMatchers("/files/**", "/contactus/fetchcontactus").hasAnyRole("ADMIN", "STAFF")
                 .and()
                 .authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")
+                .and()
+                .authorizeRequests().antMatchers("/vault/**").hasAnyRole("ADMIN", "STAFF", "USER")
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

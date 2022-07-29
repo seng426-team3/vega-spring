@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS secrets;
 DROP TABLE IF EXISTS authorities;
 DROP TABLE IF EXISTS userinfo;
 DROP TABLE IF EXISTS users;
@@ -21,4 +22,33 @@ CREATE TABLE IF NOT EXISTS userinfo (
     lastname VARCHAR(50) NOT NULL,
     FOREIGN KEY (username) REFERENCES users(username)
 );
+
+-- Mega-table approach
+CREATE TABLE IF NOT EXISTS secrets (
+    secretid VARCHAR(36) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    secretname VARCHAR(50) NOT NULL,
+    filetype VARCHAR(50) NOT NULL,
+    creationdate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    secretdata MEDIUMBLOB NOT NULL,
+    FOREIGN KEY (username) REFERENCES users(username),
+    PRIMARY KEY (secretid)
+);
 -- CREATE UNIQUE  INDEX ix_auth_username on authorities (username,authority);
+
+-- News and Events
+CREATE TABLE IF NOT EXISTS news (
+    newsid BIGINT(255) NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    bodytext LONGTEXT NOT NULL,
+    newsdate VARCHAR(36) NOT NULL,
+    timepublished INT(255) NOT NULL,
+    author VARCHAR(100) NOT NULL
+);
+
+-- Contact-Us
+CREATE TABLE IF NOT EXISTS contactus (
+    user_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    message LONGTEXT NOT NULL
+);
