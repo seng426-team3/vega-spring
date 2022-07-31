@@ -44,13 +44,12 @@ public class VaultController {
         String fileName;
         String fileEnd;
         
-        try {
-            username = jwtUtil.extractUsername(jwt.substring(7));
-            fileName = file.getOriginalFilename();
-            fileEnd = fileName.substring(fileName.indexOf("."));
-        } catch(NullPointerException e) {
-            return ResponseEntity.ok("Some provided parameters are null.");
+        username = jwtUtil.extractUsername(jwt.substring(7));
+        fileName = file.getOriginalFilename();
+        if (fileName == null) {
+            return ResponseEntity.ok("Error: file is null");
         }
+        fileEnd = fileName.substring(fileName.indexOf("."));
         
 
         byte[] secretData = file.getBytes();
@@ -91,12 +90,11 @@ public class VaultController {
                 String fileName;
                 String fileEnd;
                 
-                try {
-                    fileName = file.getOriginalFilename();
-                    fileEnd = fileName.substring(fileName.indexOf("."));
-                } catch (NullPointerException e) {
-                    return ResponseEntity.ok("NullPointerException, file to udpate is null");
+                fileName = file.getOriginalFilename();
+                if (fileName == null) {
+                    return ResponseEntity.ok("Error: file is null");
                 }
+                fileEnd = fileName.substring(fileName.indexOf("."));
 
                 secret.setFileType(fileEnd);
                 secret.setSecretData(secretData);
