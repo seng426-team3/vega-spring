@@ -140,7 +140,7 @@ public class VaultControllerTests {
 
         vaultController.updateSecret(secretID, newName, null);
 
-        Assertions.assertEquals(newName, testEntries.get(0).getSecretName());
+        Assertions.assertEquals("Test Secret", testEntries.get(0).getSecretName());
     }
 
     @Test
