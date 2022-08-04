@@ -27,7 +27,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
-                .dataSource(dataSource);
+            .dataSource(dataSource)
+            .passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override
@@ -39,9 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers("/authenticate", "/register", "/news/fetchnews","/contactus/addcontactus")
                 .permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/files/**", "/news/addnews", "/news/deletenews", "/news/editnews").hasAnyRole("ADMIN", "STAFF")
-                .and()
-                .authorizeRequests().antMatchers("/files/**", "/contactus/fetchcontactus").hasAnyRole("ADMIN", "STAFF")
+                .authorizeRequests().antMatchers("/news/addnews", "/news/deletenews", "/news/editnews", "/contactus/fetchcontactus", "/files/**").hasAnyRole("ADMIN", "STAFF")
                 .and()
                 .authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN")
                 .and()

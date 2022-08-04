@@ -40,9 +40,18 @@ public class VaultController {
     @RequestMapping(value="/createsecret", method = RequestMethod.POST)
     public ResponseEntity<?> createSecret(@RequestHeader (name="authorization") String jwt, @RequestParam("secretname") String secretname, @RequestPart MultipartFile file) throws Exception{
         // Remove the "Bearer " prefix off the JWT so that jwtUtil accepts it
-        String username = jwtUtil.extractUsername(jwt.substring(7));
-        String fileName = file.getOriginalFilename();
-        String fileEnd = fileName.substring(fileName.indexOf("."));
+        String username;
+        String fileName;
+        String fileEnd;
+        
+        username = jwtUtil.extractUsername(jwt.substring(7));
+        fileName = file.getOriginalFilename();
+        if (fileName == null) {
+            return ResponseEntity.ok("Error: file is null");
+        }
+        fileEnd = fileName.substring(fileName.indexOf("."));
+        
+
         byte[] secretData = file.getBytes();
 
         SecretEntry newSecretEntry = new SecretEntry(username, secretname, fileEnd, secretData);
@@ -68,7 +77,7 @@ public class VaultController {
 
         String response = "No updates made to secret";
 
-        if (secretname != null && secretname != secret.getSecretName()) {
+        if (secretname != null && secretname.equals(secret.getSecretName())) {
             secret.setSecretName(secretname);
 
             response = "Sucessfully updated secret";
@@ -78,8 +87,14 @@ public class VaultController {
             byte[] secretData =  file.getBytes();
 
             if (secretData != secret.getSecretData()) {
-                String fileName = file.getOriginalFilename();
-                String fileEnd = fileName.substring(fileName.indexOf("."));
+                String fileName;
+                String fileEnd;
+                
+                fileName = file.getOriginalFilename();
+                if (fileName == null) {
+                    return ResponseEntity.ok("Error: file is null");
+                }
+                fileEnd = fileName.substring(fileName.indexOf("."));
 
                 secret.setFileType(fileEnd);
                 secret.setSecretData(secretData);
